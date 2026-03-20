@@ -120,7 +120,7 @@ const Sidebar = () => {
 
   return (
     <div className="w-[230px] h-[100vh] fixed left-0 flex flex-col p-[1rem] font-2-book ">
-      <div className="  ">
+      <div >
         <LogoWithName />
       </div>
 

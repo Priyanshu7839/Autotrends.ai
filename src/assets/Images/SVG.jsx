@@ -471,7 +471,7 @@ export const CartIconSvg = () => {
 export const LogoWithName = ({ height = "45" }) => {
   return (
     <svg
-      width="auto"
+      width="200"
       height={height}
       viewBox="0 0 384 58"
       fill="none"
