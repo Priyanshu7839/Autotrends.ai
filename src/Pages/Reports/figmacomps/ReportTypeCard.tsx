@@ -15,7 +15,7 @@ export function ReportTypeCard({ type, icon: Icon, title, description }: ReportT
 
   const handleGenerate = () => {
     setReportType(type);
-    navigate('/reports/builder');
+    navigate('/builder');
   };
 
   return (
@@ -24,7 +24,7 @@ export function ReportTypeCard({ type, icon: Icon, title, description }: ReportT
         <div className="w-12 h-12 rounded-lg bg-[#0285FF]/10 flex items-center justify-center mb-4">
           <Icon className="w-6 h-6 text-[#0285FF]" />
         </div>
-        <h3 className="text-lg mb-2 text-black font-medium">{title}</h3>
+        <h3 className="text-lg mb-2 text-black">{title}</h3>
         <p className="text-sm text-[#403F3F] leading-relaxed">{description}</p>
       </div>
       <button 

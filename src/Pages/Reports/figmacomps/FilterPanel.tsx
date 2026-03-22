@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useReport } from '../ReportContext';
 import { ModeSelector } from './ModeSelector';
-import { Download } from 'lucide-react';
+import { Crown, Download } from 'lucide-react';
 
 interface FilterPanelProps {
   onExport: () => void;
@@ -19,6 +19,9 @@ export function FilterPanel({ onExport }: FilterPanelProps) {
       },
     });
   };
+
+
+  const crowns =[true,true ,true,false,false,false,false,false,false,false,true]
 
   return (
     <div className="p-6 space-y-6">
@@ -212,17 +215,20 @@ export function FilterPanel({ onExport }: FilterPanelProps) {
       <div className="space-y-3">
         <h3 className="text-sm font-medium text-black">Data Options</h3>
         <div className="space-y-2">
-          {Object.entries(filters.dataOptions).map(([key, value]) => (
-            <label key={key} className="flex items-center gap-2 text-sm">
-              <input 
+          {Object.entries(filters.dataOptions).map(([key, value],i) => (
+            <label key={key} className="flex items-center justify-between gap-2 text-sm">
+             <div className='flex items-center gap-2'> <input 
                 type="checkbox" 
                 className="rounded border-gray-300"
+                disabled={!crowns[i]}
                 checked={value}
                 onChange={() => handleDataOptionToggle(key as keyof typeof filters.dataOptions)}
               />
               <span className="text-[#403F3F] capitalize">
                 {key.replace(/([A-Z])/g, ' $1').trim()}
-              </span>
+              </span></div>
+              {!crowns[i]&& <Crown size={14} color='#ffd900' />}
+              
             </label>
           ))}
         </div>

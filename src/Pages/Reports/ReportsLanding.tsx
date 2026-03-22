@@ -81,56 +81,56 @@ export function ReportsLanding() {
     <div className="min-h-screen bg-white">
       {/* <Header /> */}
       
-      <main className="mx-auto max-w-7xl px-6 py-12">
-        {/* Hero Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl mb-4 text-black font-semibold" >
-            Generate Market & Dealer Intelligence Reports
-          </h1>
-          <p className="text-xl text-[#403F3F] max-w-3xl mx-auto mb-8">
-            Generate one-page, export-ready intelligence reports across inventory, market share, 
-            fuel mix, and finance & insurance performance.
-          </p>
-          
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <Link 
-              to="/reports/builder" 
-              className="px-8 py-3 rounded-lg bg-[#0285FF] text-white font-medium hover:bg-[#0270e0] transition-colors"
-            >
-              Generate Report
-            </Link>
-            <button 
-              onClick={() => setShowSampleModal(true)}
-              className="px-8 py-3 rounded-lg border border-[#403F3F] text-[#403F3F] font-medium hover:bg-gray-50 transition-colors"
-            >
-              View Sample Reports
-            </button>
-          </div>
-
-          <div className="flex justify-center">
-            <ModeSelector />
-          </div>
-        </div>
-
-        {/* Feature Highlight */}
-        <FeatureHighlight />
-
-        {/* Report Type Cards */}
-        <div className="mt-16">
-          <h2 className="text-2xl mb-6 text-black font-semibold">Select Report Type</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reportTypes.map((report) => (
-              <ReportTypeCard
-                key={report.type}
-                type={report.type}
-                icon={report.icon}
-                title={report.title}
-                description={report.description}
-              />
-            ))}
-          </div>
-        </div>
-      </main>
+   <main className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
+           {/* Hero Section */}
+           <div className="text-center mb-8 sm:mb-12">
+             <h1 className="text-3xl sm:text-4xl lg:text-5xl mb-3 sm:mb-4 text-black">
+               Generate Market & Dealer Intelligence Reports
+             </h1>
+             <p className="text-base sm:text-lg lg:text-xl text-[#403F3F] max-w-3xl mx-auto mb-6 sm:mb-8 px-4">
+               Generate one-page, export-ready intelligence reports across inventory, market share, 
+               fuel mix, and finance & insurance performance.
+             </p>
+             
+             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-6 sm:mb-8 px-4">
+               <Link 
+                 to="/reports/builder" 
+                 className="w-full sm:w-auto px-8 py-3 rounded-lg bg-[#0285FF] text-white font-medium hover:bg-[#0270e0] transition-colors text-center"
+               >
+                 Generate Report
+               </Link>
+               <button 
+                 onClick={() => setShowSampleModal(true)}
+                 className="w-full sm:w-auto px-8 py-3 rounded-lg border border-[#403F3F] text-[#403F3F] font-medium hover:bg-gray-50 transition-colors"
+               >
+                 View Sample Reports
+               </button>
+             </div>
+   
+             <div className="flex justify-center px-4">
+               <ModeSelector />
+             </div>
+           </div>
+   
+           {/* Feature Highlight */}
+           <FeatureHighlight />
+   
+           {/* Report Type Cards */}
+           <div className="mt-12 sm:mt-16">
+             <h2 className="text-xl sm:text-2xl mb-4 sm:mb-6 text-black px-4 sm:px-0">Select Report Type</h2>
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+               {reportTypes.map((report) => (
+                 <ReportTypeCard
+                   key={report.type}
+                   type={report.type}
+                   icon={report.icon}
+                   title={report.title}
+                   description={report.description}
+                 />
+               ))}
+             </div>
+           </div>
+         </main>
 
       {showSampleModal && (
         <SampleReportModal onClose={() => setShowSampleModal(false)} />

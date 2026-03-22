@@ -6,8 +6,8 @@ const api = axios.create({
 });
 const api2 = axios.create({
   // baseURL: "https://autotrends-backend.onrender.com/",
-  // baseURL:"http://localhost:8002"
-  baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
+  baseURL:"http://localhost:8002"
+  // baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
 });
 
 const api3 = axios.create({
