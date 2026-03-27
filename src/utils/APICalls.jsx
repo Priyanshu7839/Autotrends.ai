@@ -6,8 +6,8 @@ const api = axios.create({
 });
 const api2 = axios.create({
   // baseURL: "https://autotrends-backend.onrender.com/",
-  baseURL:"http://localhost:8002"
-  // baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
+  // baseURL:"http://localhost:8002"
+  baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
 });
 
 const api3 = axios.create({
@@ -172,7 +172,7 @@ export const AverageSalesFetch = async (dealer_id) => {
 
 export const InventoryUnitsFetch = async (dealership_id, dealerCodes) => {
   try {
-    const response = await api2.post("/dashboard/InventoryUnits", {
+    const response = await api2.post("/InventoryData/GettotalCars/:dealer_id/:order_dealer/:stock_status/:Model/:Variants", {
       dealer_id: dealership_id,
       dealerCodes: dealerCodes,
     });
@@ -184,10 +184,7 @@ export const InventoryUnitsFetch = async (dealership_id, dealerCodes) => {
 
 export const FastStarsFetch = async (dealer_id, dealerCodes) => {
   try {
-    const response = await api2.post("/dashboard/FastStars", {
-      dealer_id: dealer_id,
-      dealerCodes: dealerCodes,
-    });
+    const response = await api2.get(`/InventoryData/fastStars/${dealer_id}/ALL`);
     return response;
   } catch (error) {
     return error.response;
@@ -195,10 +192,7 @@ export const FastStarsFetch = async (dealer_id, dealerCodes) => {
 };
 export const SlowSnailsFetch = async (dealer_id, dealerCodes) => {
   try {
-    const response = await api2.post("/dashboard/SlowSnails", {
-      dealer_id: dealer_id,
-      dealerCodes: dealerCodes,
-    });
+    const response = await api2.get(`/InventoryData/slowSnails/${dealer_id}/ALL`);
     return response;
   } catch (error) {
     return error.response;

@@ -850,13 +850,14 @@ const data = {
           >
             <h1 className="text-center min-w-[100px] ">Model</h1>
             <h1 className="text-center min-w-[250px] ">Variant</h1>
-            <h1 className="text-center min-w-[90px]  ">Dealer Code</h1>
-            <h1 className="text-center min-w-[90px]  ">Age</h1>
-            <h1 className="text-center min-w-[120px] ">Stock Status</h1>
-            <h1 className="text-center min-w-[250px] ">Cust Name</h1>
-            <h1 className="text-center min-w-[250px] ">VIN Number</h1>
-            <h1 className="text-center min-w-[250px] ">Entry Date</h1>
             <h1 className="text-center min-w-[250px] ">Exterior Color</h1>
+            <h1 className="text-center min-w-[250px] ">VIN Number</h1>
+             <h1 className="text-center min-w-[250px] ">Cust Name</h1>
+            <h1 className="text-center min-w-[120px] ">Stock Status</h1>
+            <h1 className="text-center min-w-[90px]  ">Age</h1>
+            <h1 className="text-center min-w-[90px]  ">Dealer Code</h1>
+           
+            <h1 className="text-center min-w-[250px] ">Entry Date</h1>
             <h1 className="text-center min-w-[250px] ">Interior Color</h1>
           </div>
 
@@ -872,29 +873,33 @@ const data = {
                   {item?.["Model"]}
                 </h1>
                 <h1 className="text-center  min-w-[250px]">{item?.Variant}</h1>
-                <h1 className="text-center  min-w-[90px]">
-                  {item?.["Order Dealer"]}
+                  <h1 className="text-center  min-w-[250px]">
+                  {item?.["Exterior Color Name"]}
                 </h1>
-                <h1 className="text-center  min-w-[90px]">
-                  {item?.["Stock Age"]}
+                  <h1 className="text-center  min-w-[250px]">
+                  {item?.["Vin Number"]}
+                </h1>
+                  <h1 className="text-center  min-w-[250px]">
+                  {item?.["Cust Name"]}
                 </h1>
                 <h1 className="text-center  min-w-[120px]">
                   {item?.["Stock Status"]}
                 </h1>
-                 <h1 className="text-center  min-w-[250px]">
-                  {item?.["Cust Name"]}
+                 <h1 className="text-center  min-w-[90px]">
+                  {item?.["Stock Age"]}
                 </h1>
-                <h1 className="text-center  min-w-[250px]">
-                  {item?.["Vin Number"]}
+              
+                <h1 className="text-center  min-w-[90px]">
+                  {item?.["Order Dealer"]}
                 </h1>
+               
+               
                 <h1 className="text-center min-w-[250px]">
                   {new Date(
                     new Date(item?.created_at).getTime()
                   ).toLocaleString()}
                 </h1>
-                <h1 className="text-center  min-w-[250px]">
-                  {item?.["Exterior Color Name"]}
-                </h1>
+              
                 <h1 className="text-center  min-w-[250px]">
                   {item?.["Interior Color Desc"]}
                 </h1>

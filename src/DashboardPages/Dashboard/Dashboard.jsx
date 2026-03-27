@@ -35,6 +35,7 @@ import {
   GetOwnedDealerships,
   InventoryUnitsFetch,
   SlowSnailsFetch,
+  StrategyToolsInventoryDataFetch,
 } from "../../utils/APICalls";
 import {
   Chart as ChartJS,
@@ -97,9 +98,12 @@ const FastStarsPopup = ({
   rowRefs.current = [];
 
   const CapitalStuck = (FastStars?.data?.data || []).reduce((acc, item) => {
-    const basicPrice = item?.stock_data?.["Basic Price"] || 0;
-    return acc + basicPrice;
+    const basicPrice = item?.["Basic Price"] || 0;
+   
+    return acc + Number(basicPrice);
   }, 0);
+
+  
 
   const capitalStuckRatio = parseFloat(
     (CapitalStuck / FastStars?.data?.totalCapitalStuck) * 100
@@ -192,25 +196,25 @@ const FastStarsPopup = ({
                       {item?.dealer_code}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data.Model}
+                      {item?.Model}
                     </h1>
                     <h1 className="min-w-[250px] text-center">
-                      {item?.stock_data.Variant}
+                      {item?.Variant}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data["Stock Age"]}
+                      {item?.["Stock Age"]}
                     </h1>
                     <h1 className="min-w-[200px] text-center">
-                      {item?.stock_data["Exterior Color Name"]}
+                      {item?.["Exterior Color Name"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data["Interior Color Desc"]}
+                      {item?.["Interior Color Desc"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data["Vin Number"]}
+                      {item?.["Vin Number"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      ₹ {item?.stock_data["Basic Price"]}
+                      ₹ {item?.["Basic Price"]}
                     </h1>
                   </div>
                 );
@@ -246,8 +250,8 @@ const SlowSnailsPopup = ({
   rowRefs.current = [];
 
   const CapitalStuck = (SlowSnails?.data?.data || [])?.reduce((acc, item) => {
-    const basicPrice = item?.stock_data?.["Basic Price"] || 0;
-    return acc + basicPrice;
+    const basicPrice = item?.["Basic Price"] || 0;
+    return acc + Number(basicPrice);
   }, 0);
   const capitalStuckRatio = parseFloat(
     (CapitalStuck / SlowSnails?.data?.totalCapitalStuck) * 100
@@ -334,28 +338,28 @@ const SlowSnailsPopup = ({
                     className="flex items-center gap-[1rem] flex-shrink-0 py-[.5rem] px-[1rem] overflow-x-scroll bg-[white] text-[.875rem] font-2-book border-[1px] border-[#cfcfd7] rounded-[8px] text-[#757575] hover:border-[#0b85ff]"
                   >
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data?.["Order Dealer"]}
+                      {item?.["Order Dealer"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data?.Model}
+                      {item?.Model}
                     </h1>
                     <h1 className="min-w-[200px] text-center">
-                      {item?.stock_data?.Variant}
+                      {item?.Variant}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data?.["Stock Age"]}
+                      {item?.["Stock Age"]}
                     </h1>
                     <h1 className="min-w-[200px] text-center">
-                      {item?.stock_data?.["Exterior Color Name"]}
+                      {item?.["Exterior Color Name"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data?.["Interior Color Desc"]}
+                      {item?.["Interior Color Desc"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      {item?.stock_data?.["Vin Number"]}
+                      {item?.["Vin Number"]}
                     </h1>
                     <h1 className="min-w-[150px] text-center">
-                      ₹ {item?.stock_data?.["Basic Price"]}
+                      ₹ {item?.["Basic Price"]}
                     </h1>
                   </div>
                 );
@@ -587,7 +591,7 @@ const Dashboard = () => {
       toast.promise(
         (async () => {
           const result = await FetchIndiaData();
-          console.log(result);
+          // console.log(result);
 
           setPanIndiaData(
             BrandNames.map((brandName) =>
@@ -616,32 +620,32 @@ const Dashboard = () => {
   const [showCountryError, setShowCountryError] = useState(false);
   // ----------------------------------------------------------------------------------------------------------->
 
-  const headers = [
+  const [headers,setHeaders] = useState([
     {
       name: "Total Cars",
       count: "---",
-      changes: "5 cars Sold",
+      changes: "- Cars Sold",
       image: up,
     },
     {
       name: "Incoming Leads",
       count: "--",
-      changes: "10 More than Last Week",
+      changes: "- More than Last Week",
       image: up,
     },
     {
       name: "Active Leads",
       count: "--",
-      changes: "5 less than Last Week",
+      changes: "- less than Last Week",
       image: down,
     },
     {
       name: "Failed Leads",
       count: "--",
-      changes: "2 Less than Last week",
+      changes: "- Less than Last week",
       image: up,
     },
-  ];
+  ]);
 
   const [dealerCodes, setDealerCodes] = useState([]);
 
@@ -667,17 +671,17 @@ const Dashboard = () => {
   const [FastStarsShow, setFastStarsShow] = useState(false);
   const [SlowSnailsShow, setSlowSnailsShow] = useState(false);
   const [BbndUnits, setBbndUnits] = useState("");
+  const [MainUnits,setMainUnits] = useState("")
 
   useEffect(() => {
     const InventoryUnits = async () => {
       try {
-        const response = await InventoryUnitsFetch(
-          dealershipDetails?.id,
-          dealerCodes
-        );
-        const response1 = await AverageSalesFetch(dealershipDetails?.id);
+        const response = await StrategyToolsInventoryDataFetch(
+          dealershipDetails?.id,'ALL','ALL','ALL','ALL');
 
-        const now = new Date();
+          //for inventory aging
+        const response1 = await AverageSalesFetch(dealershipDetails?.id);
+         const now = new Date();
         const currentMonthDays = new Date(
           now.getFullYear(),
           now.getMonth() + 1,
@@ -688,8 +692,25 @@ const Dashboard = () => {
           response1?.data?.Data?.[0]["Average Sales"] / currentMonthDays
         ).toFixed(2);
 
-        const age = parseFloat(response?.data?.Units / dailySales).toFixed(2);
+        const age = parseFloat(response?.mainUnits / dailySales).toFixed(2);
         setInventoryAge(age);
+        ////////////////////////////////////////////////////////////////////////////
+
+
+       setHeaders((prev) => {
+  
+  return prev.map((item) => {
+    if (item.name === "Total Cars") {
+     
+      return { ...item, count: Number(response?.mainUnits) + Number(response?.bbndUnits) };
+    }
+    return item;
+  });
+});
+        
+setBbndUnits(response?.bbndUnits)
+setMainUnits(response?.mainUnits)
+       
 
         const faststars = await FastStarsFetch(
           dealershipDetails?.id,
@@ -703,11 +724,7 @@ const Dashboard = () => {
         );
         setSlowSnails(slowSnails);
 
-        const Bbndstock = await GetBBNDStockUnits(
-          dealershipDetails?.id,
-          dealerCodes
-        );
-        setBbndUnits(Bbndstock?.data?.Units);
+        
       } catch (error) {
         console.log(error);
       }
@@ -997,9 +1014,15 @@ setdiffArray(
         SetSalesVelocityCalculatorData((prev) => ({
           ...prev,
           InventoryAge: parseFloat(
-            InventoryUnits.length / prev.DailySales
+            MainUnits / prev.DailySales
           ).toFixed(2),
         }));
+
+        setInventoryAge(parseFloat(
+            MainUnits / parseFloat(SalesVelocityCalculatorData.AverageSales / currentMonthDays).toFixed(
+            2
+          )
+          ).toFixed(2))
       }
     }
   };
@@ -1272,7 +1295,7 @@ setdiffArray(
                       <h1 className="text-[.875rem] font-medium flex items-center justify-between w-full ">
                         <span>{head.name}</span>{" "}
                       </h1>
-                      <h1 className="text-[2rem] font-bold text-[#0b85ff]">
+                      <h1 className="text-[2rem] font-bold text-[white]">
                         {head.count}
                       </h1>
                       <h1 className="text-[.75rem]  text-white">
