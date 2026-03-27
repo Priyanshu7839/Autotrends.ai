@@ -8,7 +8,8 @@ import PanIndiaData from "../../../Data/PanIndiaData.json";
 
 import { FaChartBar } from 'react-icons/fa';
 import { RiArrowDropDownLine } from 'react-icons/ri';
-import { Line } from 'react-chartjs-2';
+import { Line as Lined} from 'react-chartjs-2';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 // Mock data for charts
@@ -36,6 +37,21 @@ const tivData = {
   kiaShare2025: [55, 42, 34, 41, 38, 31, 30, 25, 31, 60, 29, 29],
   kiaShare2026: [51, 39, 16, null, null, null, null, null, null, null, null, null],
 };
+
+const brandComparisonData = [
+  { month: 'Jan', '2025': 22500, '2026': 30500 },
+  { month: 'Feb', '2025': 19800, '2026': 25300 },
+  { month: 'Mar', '2025': 22800, '2026': 15000 },
+  { month: 'Apr', '2025': 22300, '2026': null },
+  { month: 'May', '2025': 17500, '2026': null },
+  { month: 'Jun', '2025': 18900, '2026': null },
+  { month: 'Jul', '2025': 19800, '2026': null },
+  { month: 'Aug', '2025': 19200, '2026': null },
+  { month: 'Sep', '2025': 17200, '2026': null },
+  { month: 'Oct', '2025': 33800, '2026': null },
+  { month: 'Nov', '2025': 24100, '2026': null },
+  { month: 'Dec', '2025': 20800, '2026': null },
+];
 
 
 export function ReportPreview() {
@@ -164,8 +180,8 @@ export function ReportPreview() {
         <div>
           <div className="flex items-center gap-2 mb-3 sm:mb-4">
             <h3 className="text-base sm:text-lg text-black font-semibold">TIV Comparison for Kia in JhansiRTO</h3>
-            <div className="flex gap-2">
-              {/* <select className="text-xs border border-gray-300 rounded px-2 py-1 text-[#0285FF]">
+            {/* <div className="flex gap-2">
+              <select className="text-xs border border-gray-300 rounded px-2 py-1 text-[#0285FF]">
                 <option>Kia</option>
                 <option>Hyundai</option>
                 <option>Maruti</option>
@@ -179,8 +195,8 @@ export function ReportPreview() {
                 <option>2026</option>
                 <option>2025</option>
                 <option>2024</option>
-              </select> */}
-            </div>
+              </select>
+            </div> */}
           </div>
           <TIVComparisonTable data={tivData} />
         </div>
@@ -738,7 +754,7 @@ function MonthlyAnalysisRTO ({selectedRTO})  {
         
 
         <div className="flex items-center justify-start  w-full h-[300px]">
-          <Line data={data10} options={options2} />
+          <Lined data={data10} options={options2} />
         </div>
       </div>
     </div>
@@ -902,9 +918,129 @@ function OEMVs ({selectedRTO})  {
 
         
 
-        <div className="flex items-center justify-start  w-full h-[300px]">
-          <Line data={data10} options={options2} />
+        <div className="flex  w-full ">
+          {/* <Line data={data10} options={options2} /> */}
+          <BrandComparisonChart data={brandComparisonData}/>
         </div>
+      </div>
+    </div>
+  );
+}
+
+
+function  BrandComparisonChart({ data }: { data: typeof brandComparisonData }) {
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white border border-gray-300 rounded-lg p-3 shadow-lg">
+          <p className="text-xs font-medium text-black mb-1">{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p key={index} className="text-xs" style={{ color: entry.color }}>
+              {entry.name}: {entry.value !== null ? entry.value.toLocaleString() : 'N/A'}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const total2025 = data.reduce((sum, item) => sum + (item['2025'] || 0), 0);
+  const total2026 = data.filter(item => item['2026'] !== null).reduce((sum, item) => sum + (item['2026'] || 0), 0);
+
+  return (
+    <div className="space-y-4 w-full">
+      <div className="h-80 w-full bg-[#f8fafc] rounded-lg p-4 border border-gray-200">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={data} margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
+            <CartesianGrid strokeDasharray="0" stroke="#e5e7eb" vertical={false} />
+            <XAxis
+              dataKey="month"
+              tick={{ fill: '#6b7280', fontSize: 11 }}
+              axisLine={{ stroke: '#e5e7eb' }}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fill: '#6b7280', fontSize: 11 }}
+              axisLine={{ stroke: '#e5e7eb' }}
+              tickLine={false}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <Line
+              type="monotone"
+              dataKey="2025"
+              stroke="#22c55e"
+              strokeWidth={2}
+              dot={{ fill: '#22c55e', r: 4, strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: '#22c55e' }}
+              connectNulls={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="2026"
+              stroke="#3b82f6"
+              strokeWidth={2}
+              dot={{ fill: '#3b82f6', r: 4, strokeWidth: 0 }}
+              activeDot={{ r: 6, fill: '#3b82f6' }}
+              connectNulls={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Complete Data Table */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-xs border border-gray-200 rounded-lg">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-3 py-2 text-left text-[#403F3F] font-medium">Month</th>
+              <th className="px-3 py-2 text-right text-[#403F3F] font-medium">2025</th>
+              <th className="px-3 py-2 text-right text-[#403F3F] font-medium">2026</th>
+              <th className="px-3 py-2 text-right text-[#403F3F] font-medium">Change</th>
+              <th className="px-3 py-2 text-right text-[#403F3F] font-medium">% Change</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-200">
+            {data.map((item) => {
+              const change = item['2026'] !== null ? item['2026'] - item['2025'] : null;
+              const percentChange = item['2026'] !== null ? ((item['2026'] - item['2025']) / item['2025'] * 100) : null;
+              return (
+                <tr key={item.month} className="hover:bg-gray-50">
+                  <td className="px-3 py-2 text-black">{item.month}</td>
+                  <td className="px-3 py-2 text-right text-black">{item['2025'].toLocaleString()}</td>
+                  <td className="px-3 py-2 text-right text-black">
+                    {item['2026'] !== null ? item['2026'].toLocaleString() : '-'}
+                  </td>
+                  <td className={`px-3 py-2 text-right ${
+                    change === null ? 'text-[#403F3F]' : change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {change !== null ? (change >= 0 ? '+' : '') + change.toLocaleString() : '-'}
+                  </td>
+                  <td className={`px-3 py-2 text-right ${
+                    percentChange === null ? 'text-[#403F3F]' : percentChange >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}>
+                    {percentChange !== null ? (percentChange >= 0 ? '+' : '') + percentChange.toFixed(1) + '%' : '-'}
+                  </td>
+                </tr>
+              );
+            })}
+            <tr className="bg-gray-50 font-medium">
+              <td className="px-3 py-2 text-black">Total</td>
+              <td className="px-3 py-2 text-right text-black">{total2025.toLocaleString()}</td>
+              <td className="px-3 py-2 text-right text-black">{total2026.toLocaleString()}</td>
+              <td className={`px-3 py-2 text-right ${
+                (total2026 - total2025) >= 0 ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {((total2026 - total2025) >= 0 ? '+' : '') + (total2026 - total2025).toLocaleString()}
+              </td>
+              <td className={`px-3 py-2 text-right ${
+                ((total2026 - total2025) / total2025 * 100) >= 0 ? 'text-green-600' : 'text-red-600'
+              }`}>
+                {(((total2026 - total2025) / total2025 * 100) >= 0 ? '+' : '') + ((total2026 - total2025) / total2025 * 100).toFixed(1)}%
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
