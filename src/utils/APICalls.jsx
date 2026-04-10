@@ -529,11 +529,18 @@ export const GetLastUpdatedDates = async(dealer_id) => {
   try {
     const LastUpdateDate  = api2.get(`/InventoryData/GetLastUpdateDate/${dealer_id}`)
     const BBNDLastUpdateDate  = api2.get(`/BBNDInventoryData/GetLastUpdateDate/${dealer_id}`)
+    const vnaLastUpdateDate = api2.get(`poolstock/GetLastUpdateDateVNA/${dealer_id}`)
+    const poolstockLastUpdateDate = api2.get(`poolstock/GetLastUpdateDatepoolstock/${dealer_id}`)
+  
 
-    const response = await Promise.allSettled([LastUpdateDate,BBNDLastUpdateDate])
+    const response = await Promise.allSettled([LastUpdateDate,BBNDLastUpdateDate,vnaLastUpdateDate,poolstockLastUpdateDate])
     return {
       lastupdate:response?.[0]?.value?.data?.date,
-      bbndlastupdate:response?.[1]?.value?.data?.date
+      bbndlastupdate:response?.[1]?.value?.data?.date,
+      vnalastupdate:response?.[2]?.value?.data?.date,
+      poolstocklastupdate:response?.[3]?.value?.data?.date,
+  
+
     }
 
   } catch (error) {
@@ -721,3 +728,42 @@ export const VahanApiCalls = async(selectedState,selectedRTO) => {
       IndiaData:results[2]?.value?.data?.data
     }
 }
+
+
+
+export const PoolstockMatchedData = async(dealer_id,asm_id) => {
+
+  try {
+    const response =await api2.post('/poolstock/getComputedVna',{
+      dealer_id:dealer_id,
+      asm_id:asm_id
+    })
+    return response
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const UploadPoolStock = async(formData) => {
+  try {
+    const response = await api2.post("/exceluploads/uploadPoolStock", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+export const UploadVNA = async(formData) => {
+  try {
+    const response = await api2.post("/exceluploads/uploadVNA", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+

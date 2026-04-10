@@ -49,6 +49,8 @@ import Login from '../DashboardPages/LandingPage/pages/Login'
 import { ReportsLanding } from "../Pages/Reports/ReportsLanding";
 import { ReportBuilder } from "../Pages/Reports/ReportBuilder";
 import { SavedReports } from "../Pages/Reports/SavedReports";
+import PoolStock from "../DashboardPages/StrategyTools/PoolStock";
+import ReportNews from "../Pages/Reports/ReportNews/ReportNews";
 
 const MarketAnalytics = lazy(() =>
   import(".././DashboardPages/MarketAnalytics/MarketAnalytics")
@@ -137,6 +139,11 @@ const Routers = createBrowserRouter([
         path:'/Dealers/login',
         element:<Login/>
       },
+      {
+        path:'/news',
+        element:<ReportNews/>
+      },
+      
   {
     path: "/Dashboard",
 
@@ -214,6 +221,10 @@ const Routers = createBrowserRouter([
       {
         path: "/Dashboard/datasync",
         element: <Datasync />,
+      },
+      {
+        path: "/Dashboard/poolstock",
+        element: <PoolStock />,
       },
      
     ],

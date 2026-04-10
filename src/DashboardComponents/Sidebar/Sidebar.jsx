@@ -1,6 +1,6 @@
 import { setDealershipdetails } from "../../Store/DealershipDetailsSlice";
 import { LogoWithName } from "../../assets/Images/SVG";
-import { LogOut } from "lucide-react";
+import { FileChartColumn, LogOut } from "lucide-react";
 import React, { useEffect, useState,Suspense,lazy } from "react";
 import { FaHandHoldingUsd, FaHeartbeat } from "react-icons/fa";
 import { FaHandHoldingHand, FaWarehouse } from "react-icons/fa6";
@@ -11,57 +11,79 @@ import { MdHeadphones, MdAutoGraph, MdOutlineCloudSync } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { SiGoogleanalytics, SiGoogleadsense } from "react-icons/si";
 import { TbLayoutDashboardFilled } from "react-icons/tb";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router";
 
 const Sidebar = () => {
+
+  const dealershipDetails = useSelector((state) => state.DealershipDetails);
+  console.log(dealershipDetails)
+
   const SidebarItems = [
     {
       name: "Dashboard",
       icon: <TbLayoutDashboardFilled />,
       click: "/Dashboard/",
+      role:'All'
     },
 
     {
       name: "Market Analytics",
       icon: <MdAutoGraph />,
       click: "/Dashboard/marketAnalytics",
+      role:'All'
+
     },
     {
       name: "Inventory",
       dropdown:<RiArrowDropDownLine />,
       icon: <FaWarehouse />,
       click: "/Dashboard/MasterInventory",
+      role:'All'
+
     },
     {
       name: "Impact Simulator",
       icon: <ImCalculator />,
       click: "/Dashboard/Strategytools",
+      role:'All'
+    },
+    {
+      name: "Poolstock",
+      icon: <FileChartColumn size={15}/>,
+      click: "/Dashboard/poolstock",
+      role:'ASM'
+
     },
     {
       name: "Customers",
       icon: <HiMiniUsers />,
       click: "/Dashboard/customer",
+      role:'All'
     },
     {
       name: "Leads",
       icon: <SiGoogleadsense />,
       click: "/Dashboard/Leads",
+      role:'All'
     },
     {
       name: "Insurance Partners",
       icon: <FaHandHoldingHand />,
       click: "/Dashboard/insurancepartners",
+      role:'All'
     },
     {
       name: "Finance Partners",
       icon: <FaHandHoldingUsd />,
       click: "/Dashboard/financepartners",
+      role:'All'
     },
     {
       name: "Data Sync",
       icon:  <MdOutlineCloudSync className="text-[1.25rem]"/>,
       click: "/Dashboard/datasync",
+      role:'ASM'
     }
   ];
 
@@ -125,17 +147,18 @@ const Sidebar = () => {
       </div>
 
       <div className="w-full h-full flex flex-col">
-        <div className="w-full h-fit  p-[1rem] flex flex-col gap-[.5rem] ">
+        <div className={`w-full h-fit  p-[1rem] flex flex-col  ${(dealershipDetails?.role === 'ASM') ? 'gap-[.125rem]' :'gap-[.5rem]'} `}>
           {SidebarItems.map((item, index) => {
             return (
-              <div key={index} className="flex flex-col">
+              <div key={index} className="flex flex-col ">
                 <div
-                  className={`flex items-center  justify-between gap-[.5rem]  py-[.35rem] px-[.5rem] rounded-[8px] cursor-pointer transition-width duration-300 relative text-[1rem]
+                  className={`flex items-center  justify-between gap-[.5rem]  py-[.35rem] px-[.5rem] rounded-[8px] cursor-pointer transition-width duration-300 relative text-[1rem] 
                        ${
                          currentActiveSlide === item.name
                            ? "w-[180px] bg-[#0b85ff] text-[#fff]"
                            : "w-[0px] "
                        }
+                       ${(dealershipDetails?.role ==='ASM' && item.role !== 'ASM') && 'hidden'}
                     
                         `}
                   onClick={() => {

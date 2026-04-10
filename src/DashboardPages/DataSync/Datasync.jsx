@@ -9,6 +9,8 @@ import {
   GetDealerCodes,
   GetLastUpdatedDates,
   UploadBBndExcel,
+  UploadPoolStock,
+  UploadVNA,
   UploadXL,
 } from "../../utils/APICalls";
 import React, { useEffect, useState } from "react";
@@ -28,6 +30,7 @@ import {
   Shield,
   Clock,
   CheckCircle,
+  FileChartColumn,
 } from "lucide-react";
 
 const Datasync = () => {
@@ -46,6 +49,7 @@ const Datasync = () => {
       progress: 0,
       status: "idle",
       description: "Upload your inventory data here.",
+      role:'All'
     },
     {
       id: "bbnd-inventory",
@@ -57,6 +61,34 @@ const Datasync = () => {
       progress: 0,
       status: "idle",
       description: "Upload BBND inventory data here.",
+      role:'All'
+
+    },
+    {
+      id: "vna",
+      title: "VNA Upload",
+      icon: FileChartColumn,
+      lastUpdated: "...",
+      file: null,
+      color: "#0066CC",
+      progress: 0,
+      status: "idle",
+      description: "Upload your sales data here.",
+      role:'All'
+
+    },
+    {
+      id: "poolstock",
+      title: "Poolstock Upload",
+      icon: FileChartColumn,
+      lastUpdated: "...",
+      file: null,
+      color: "#0066CC",
+      progress: 0,
+      status: "idle",
+      description: "Upload your sales data here.",
+      role:'ASM'
+
     },
     {
       id: "sales",
@@ -68,6 +100,8 @@ const Datasync = () => {
       progress: 0,
       status: "idle",
       description: "Upload your sales data here.",
+      role:'All'
+
     },
     {
       id: "service",
@@ -79,6 +113,8 @@ const Datasync = () => {
       progress: 0,
       status: "idle",
       description: "Upload service data here.",
+      role:'All'
+
     },
     {
       id: "finance",
@@ -90,6 +126,8 @@ const Datasync = () => {
       progress: 0,
       status: "idle",
       description: "Upload finance payout data here.",
+      role:'All'
+
     },
     {
       id: "insurance",
@@ -101,7 +139,10 @@ const Datasync = () => {
       progress: 0,
       status: "idle",
       description: "Upload insurance payout data here.",
+      role:'All'
+
     },
+    
   ]);
 
   
@@ -112,6 +153,7 @@ const Datasync = () => {
    const FetchLastUpdateDate = async () => {
     try {
       const response = await GetLastUpdatedDates(dealershipDetails?.id);
+      console.log(response)
 
        setUploadSections(prev => prev.map(s => 
         s.id === 'inventory' 
@@ -120,6 +162,12 @@ const Datasync = () => {
             dateStyle:'medium'
           }), file: null, progress: 100, status: 'success' }
           : s.id === 'bbnd-inventory' ?{ ...s, lastUpdated: new Date(response?.bbndlastupdate).toLocaleString('en-IN',{
+            timeStyle:'short',
+            dateStyle:'medium'
+          }), file: null, progress: 100, status: 'success' }: s.id === 'vna' ?{ ...s, lastUpdated: new Date(response?.vnalastupdate).toLocaleString('en-IN',{
+            timeStyle:'short',
+            dateStyle:'medium'
+          }), file: null, progress: 100, status: 'success' }: s.id === 'poolstock' ?{ ...s, lastUpdated: new Date(response?.poolstocklastupdate).toLocaleString('en-IN',{
             timeStyle:'short',
             dateStyle:'medium'
           }), file: null, progress: 100, status: 'success' }:s
@@ -289,7 +337,130 @@ else{
         toast.error(`${section.title} failed!`);
       }
     }
+
+     if (section?.id === "vna") {
+      const formData = new FormData();
+      formData.append("file", section?.file);
+      formData.append("dealer_id", dealershipDetails?.id);
+
+      try {
+        const response = await UploadVNA(formData);
+
+       
+    
+       
+           const timeresponse = await GetLastUpdatedDates(dealershipDetails?.id);
+           console.log(timeresponse)
+
+        setUploadSections((prev) =>
+          prev.map((s) =>
+            s.id === "inventory"
+              ? {
+                  ...s,
+                  lastUpdated: new Date(timeresponse?.vnalastupdate).toLocaleString('en-In',{
+            timeStyle:'short',
+            dateStyle:'medium'
+          }),
+                  file: null,
+                  progress: 100,
+                  status: "success",
+                }
+              : s
+          )
+        );
+
+         if(response.data.msg === 'Upload successful'){
+
+        
+
+        setUploading(null);
+        toast.success(`${section.title} completed successfully!`);
+        }
+else{
+ setUploading(null);
+        toast.error(`${response.data.error}`);
+}
+
+
+
+        
+       
+      } catch (error) {
+        setUploadSections((prev) =>
+          prev.map((s) =>
+            s.id === sectionId
+              ? { ...s, file: null, progress: 100, status: "success" }
+              : s
+          )
+        );
+
+        setUploading(null);
+        toast.error(`${section.title} failed!`);
+      }
+    }
+     if (section?.id === "poolstock") {
+      const formData = new FormData();
+      formData.append("file", section?.file);
+      formData.append("asm_id", dealershipDetails?.id);
+
+      try {
+        const response = await UploadPoolStock(formData);
+
+       
+    
+       
+           const timeresponse = await GetLastUpdatedDates(dealershipDetails?.id);
+           console.log(timeresponse)
+
+        setUploadSections((prev) =>
+          prev.map((s) =>
+            s.id === "inventory"
+              ? {
+                  ...s,
+                  lastUpdated: new Date(timeresponse?.poolstocklastupdate).toLocaleString('en-In',{
+            timeStyle:'short',
+            dateStyle:'medium'
+          }),
+                  file: null,
+                  progress: 100,
+                  status: "success",
+                }
+              : s
+          )
+        );
+
+         if(response.data.msg === 'POOL STK uploaded'){
+
+        
+
+        setUploading(null);
+        toast.success(`${section.title} completed successfully!`);
+        }
+else{
+ setUploading(null);
+        toast.error(`${response.data.error}`);
+}
+
+
+
+        
+       
+      } catch (error) {
+        setUploadSections((prev) =>
+          prev.map((s) =>
+            s.id === sectionId
+              ? { ...s, file: null, progress: 100, status: "success" }
+              : s
+          )
+        );
+
+        setUploading(null);
+        toast.error(`${section.title} failed!`);
+      }
+    }
   };
+
+ 
 
   return (
     <div className="w-[calc(100vw-230px)] h-[100vh]  p-[1rem] font-roboto ">
@@ -357,6 +528,20 @@ else{
                   shadow: "shadow-amber-500/10",
                   hoverShadow: "group-hover:shadow-amber-500/20",
                 },
+                 vna: {
+                  gradient: "from-pink-400/20 to-pink-500/20",
+                  border: "border-pink-400/30",
+                  icon: "text-pink-600",
+                  shadow: "shadow-pink-500/10",
+                  hoverShadow: "group-hover:shadow-pink-500/20",
+                },
+                 poolstock: {
+                  gradient: "from-lime-400/20 to-lime-500/20",
+                  border: "border-lime-400/30",
+                  icon: "text-lime-600",
+                  shadow: "shadow-lime-500/10",
+                  hoverShadow: "group-hover:shadow-lime-500/20",
+                },
                 sales: {
                   gradient: "from-emerald-400/20 to-emerald-500/20",
                   border: "border-emerald-400/30",
@@ -392,9 +577,11 @@ else{
               return (
                 <div
                   key={section.id}
-                  className="glass-card rounded-2xl px-4 py-2 sm:px-6 sm:py-4
+                  className={` glass-card rounded-2xl px-4 py-2 sm:px-6 sm:py-4
                         backdrop-blur-xl border border-white/20 shadow-lg hover:border-[#0066CC]/30 hover:shadow-xl 
-                        transition-all group "
+                        transition-all group ${(dealershipDetails?.role ==='ASM' && section.role !=='ASM')  && 'hidden'} 
+                        ${(dealershipDetails?.role !=='ASM' && section.role ==='ASM' &&'hidden')}
+                        `}
                 >
                   <div className="flex flex-col sm:flex-row lg:items-center justify-between gap-4 lg:gap-6">
                     {/* Left: Icon + Title + Status Dot */}

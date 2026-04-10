@@ -259,7 +259,7 @@ const Footer = () => {
                 ${breakpoint <= 1200 && breakpoint > 768 && "text-[.75rem]"}
                 ${breakpoint <= 768  && "text-[.625rem]"} `}
           >
-            © 2025 Autotrends.ai | All Right Reserved
+            © 2026 Autotrends.ai | All Right Reserved
           </h1>
         </div>
       </div>
