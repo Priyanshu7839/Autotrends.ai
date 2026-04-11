@@ -671,7 +671,7 @@ export const FetchRTOData = async (selectedState, selectedRTO) => {
 export const FetchIndiaData = async () => {
   try {
     const response = await api3.get(
-      `summary?state_name=All Vahan4 Running States (36/36)&rto_name=All Vahan4 Running Office(1460/1465)&page=1&size=5000&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
+      `summary?state_name=All Vahan4 Running States (36/36)&rto_name=All Vahan4 Running Office(1463/1466)&page=1&size=5000&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
       {
         headers: {
           "X-API-Key":
@@ -685,49 +685,6 @@ export const FetchIndiaData = async () => {
     return error.response;
   }
 };
-
-
-export const VahanApiCalls = async(selectedState,selectedRTO) => {
-
-  const RTOData = api3.get(
-      `summary?state_name=${selectedState}&page=1&size=5000&rto_name=${selectedRTO}&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
-      {
-        headers: {
-          "X-API-Key":
-            "cmm080zHOgpPAptZ9lqMOd6PKuHYKkT7qJGYq28PxhcrXu3dAL0sGIqrpdYUWxxJ",
-        },
-      }
-    )
-
-    const StateData = api3.get(
-      `summary?state_name=${selectedState}&page=1&size=5000&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
-      {
-        headers: {
-          "X-API-Key":
-            "cmm080zHOgpPAptZ9lqMOd6PKuHYKkT7qJGYq28PxhcrXu3dAL0sGIqrpdYUWxxJ",
-        },
-      }
-    )
-
-    const IndiaData = api3.get(
-      `summary?state_name=All Vahan4 Running States (36/36)&rto_name=All Vahan4 Running Office(1460/1465)&page=1&size=5000&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
-      {
-        headers: {
-          "X-API-Key":
-            "cmm080zHOgpPAptZ9lqMOd6PKuHYKkT7qJGYq28PxhcrXu3dAL0sGIqrpdYUWxxJ",
-        },
-      }
-    )
-
-
-    const results = await Promise.allSettled([RTOData,StateData,IndiaData])
-
-    return {
-      RtoData:results[0]?.value?.data?.data,
-      StateData:results[1]?.value?.data?.data,
-      IndiaData:results[2]?.value?.data?.data
-    }
-}
 
 
 
