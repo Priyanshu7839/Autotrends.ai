@@ -2,12 +2,33 @@ import { AlertCircle, Bot, CheckCircle, CheckCircle2, Clock, FileChartColumn, Tr
 import React,{useEffect, useRef, useState} from 'react'
 import { UploadCard } from "./Components/UploadCard";
 import {KPICard} from './Components/KPICard'
-import { poolStockRecords, asmUpload, dealerUpload } from "./data/poolStockData";
-import { PoolstockMatchedData } from '../../utils/APICalls';
+import { poolStockRecords, dealerUpload } from "./data/poolStockData";
+import { GetDealerCodes, GetLastUpdatedDates, GetuniqueDealerCodes, PoolstockMatchedData } from '../../utils/APICalls';
+import { useSelector } from 'react-redux';
+import { RiArrowDropDownLine } from 'react-icons/ri';
 
 
 
 const PoolStock = () => {
+
+  const dealershipDetails = useSelector((state) => state.DealershipDetails);
+
+
+  const [asmUpload,setasmUpload] = useState({
+    name: 'Divyajeet Kumar',
+    uploadTime: '2026-03-28 09:45 AM',
+    fileName: 'ASM_North_Zone_Mar2026.xlsx',
+    totalRecords: 1247,
+    status: 'uploaded'
+  })
+
+   const [dealerUpload,setdealerUpload] = useState({
+    name: 'Shivam Aggrawal',
+    uploadTime: '2026-03-28 10:15 AM',
+    fileName: 'Dealer_Network_Stock_Mar2026.xlsx',
+    totalRecords: 1198,
+    status: 'uploaded'
+  })
 
    const headerRef = useRef(null);
     const rowRefs = useRef([]);
@@ -31,17 +52,65 @@ const PoolStock = () => {
   const matchAccuracy = ((totalMatched / poolStockRecords.length) * 100).toFixed(1);
 
   const [MatchedStock,setMatchedStock] = useState([])
- 
+  const [dealerCodes,setdealerCodes] = useState([])
+  const [codeButtonShow,setCodeButtonShow] = useState(false)
+    const [selectedDealerCode,setSelectedDealerCode] = useState('ALL')
+
+
+    useEffect(()=>{
+          const dealercodefetch = async() => {
+               if(dealershipDetails?.role === 'ASM') {
+                const dealer_codes = await GetuniqueDealerCodes()
+                setdealerCodes(dealer_codes?.data?.data)
+               }
+               else{
+                const dealer_codes = await GetDealerCodes(dealershipDetails?.id)
+              setdealerCodes(["ALL",...dealer_codes?.data?.msg?.map((item)=>item.dealer_code)])
+               } 
+
+             
+              
+              
+            
+          }
+
+          dealercodefetch()
+    },[])
 
     useEffect(()=>{
         const MatchedData = async() =>{
-          const response = await PoolstockMatchedData(1,1)
+          const response = await PoolstockMatchedData(dealershipDetails?.id,1,selectedDealerCode)
           console.log(response)
-          setMatchedStock(response?.data)
-        } 
+         
+          setMatchedStock(response?.data?.filter((item)=>
+            item.i > 0
+          ))
 
+
+          const timedata = await GetLastUpdatedDates(dealershipDetails?.id) 
+          console.log(timedata)
+
+
+          setasmUpload({...asmUpload , uploadTime:new Date(timedata?.poolstocklastupdate).toLocaleString('en-IN',{
+            timeStyle:'short',
+            dateStyle:'medium'
+          })})
+
+
+          setdealerUpload({...dealerUpload,uploadTime:new Date(timedata?.vnalastupdate).toLocaleString('en-IN',{
+            timeStyle:'short',
+            dateStyle:'medium'
+          })})
+
+
+
+         
+        } 
         MatchedData()
-    },[])
+    },[selectedDealerCode])
+
+
+
 
 
   return (
@@ -96,7 +165,7 @@ const PoolStock = () => {
             </h2>
           </div>
           <div className="grid grid-cols-2 gap-6">
-            <UploadCard title="OEM Upload (ASM)" upload={asmUpload} type="asm" />
+            <UploadCard title="ASM Upload (Poolstock)" upload={asmUpload} type="asm" />
             <UploadCard title="Dealer Upload (VNA)" upload={dealerUpload} type="dealer" />
           </div>
         </div>
@@ -150,7 +219,47 @@ const PoolStock = () => {
         </div>
 
            <div className="w-full py-[.5rem] px-[1rem] border-[1px] border-[#cfcfd7] rounded-[8px] flex flex-col gap-[1rem]">
-          <h1 className="text-[1.25rem] font-2">Inventory Stock</h1>
+        <div className='flex items-center justify-between gap-2'>
+            <h1 className="text-[1.25rem] font-2">Matched VNA Stock</h1>
+
+             <button
+                className={`text-[#0b85ff] text-[.875rem] flex items-center justify-between gap-[.25rem] cursor-pointer relative px-[.5rem] py-[.25rem] border-[1px] border-[#0b85ff] rounded-[8px] z-[999]  ${
+                  codeButtonShow && "rounded-b-[0px] border-b-0"
+                }`}
+                onClick={() => {
+                  setCodeButtonShow(!codeButtonShow);
+                }}
+              >
+                {selectedDealerCode}
+                <RiArrowDropDownLine className="text-[1.25rem] font-normal" />
+                <div
+                  className={`absolute top-[100%] left-[-1px]  border-t-0 rounded-[8px] rounded-t-[0px] border-[#0b85ff] 
+                                   transition-height duration-200 overflow-y-scroll bg-[white] z-10
+                                   ${
+                                     codeButtonShow
+                                       ? "h-auto w-[calc(100%+2px)] border-[1px]"
+                                       : "w-[0px] h-[0px] border-0"
+                                   }
+                                   `}
+                  style={{ scrollbarWidth: "none" }}
+                >
+                  {dealerCodes?.map((item, i) => {
+                      return (
+                        <h1
+                          key={i}
+                          className={` py-[.25rem] 
+                                         `}
+                          onClick={() => {
+                            setSelectedDealerCode(item);
+                          }}
+                        >
+                          {item}
+                        </h1>
+                      );
+                    })}
+                </div>
+              </button>
+        </div>
           <div
             className="w-full p-[.5rem] px-[1rem] border-[1px] border-[#cfcfd7] bg-[#0b85ff] text-[white] rounded-[8px] font-2 text-[.875rem] flex items-center justify-between overflow-x-scroll"
             ref={headerRef}

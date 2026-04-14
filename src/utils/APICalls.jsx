@@ -6,8 +6,8 @@ const api = axios.create({
 });
 const api2 = axios.create({
   // baseURL: "https://autotrends-backend.onrender.com/",
-  // baseURL:"http://localhost:8002"
-  baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
+  baseURL:"http://localhost:8002"
+  // baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
 });
 
 const api3 = axios.create({
@@ -688,12 +688,14 @@ export const FetchIndiaData = async () => {
 
 
 
-export const PoolstockMatchedData = async(dealer_id,asm_id) => {
+export const PoolstockMatchedData = async(dealer_id,asm_id,selectedDealerCode) => {
+  console.log(dealer_id)
 
   try {
     const response =await api2.post('/poolstock/getComputedVna',{
       dealer_id:dealer_id,
-      asm_id:asm_id
+      asm_id:asm_id,
+      selectedDealerCode:selectedDealerCode
     })
     return response
   } catch (error) {
@@ -723,4 +725,13 @@ export const UploadVNA = async(formData) => {
     return error.response;
   }
 };
+
+export const GetuniqueDealerCodes  = async() => {
+  try {
+    const response = await api2.get('/poolstock/getuniquecodes')
+    return response
+  } catch (error) {
+    return error.response
+  }
+}
 
