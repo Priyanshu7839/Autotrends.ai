@@ -1,3 +1,0 @@
-import { ahmedabad,kochi,kolkata,chennai,chandigarh,mumbai,lucknow,hyderabad,bangalore,ghaziabad,jaipur,gurgaon } from "../assets/Images"
-
-export const cities = [{name:'ahmedabad',image:ahmedabad},{name:'bangalore',image:bangalore},{name:'chennai',image:chennai},{name:'hyderabad',image:hyderabad},{name:'kolkata',image:kolkata},{name:'lucknow',image:lucknow},{name:'kochi',image:kochi},{name:'mumbai',image:mumbai},{name:'ghaziabad',image:ghaziabad},{name:'jaipur',image:jaipur},{name:'gurgaon',image:gurgaon},{name:'chandigarh',image:chandigarh}]
