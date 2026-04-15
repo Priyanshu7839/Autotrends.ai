@@ -735,3 +735,49 @@ export const GetuniqueDealerCodes  = async() => {
   }
 }
 
+export const getpoolstock = async() => {
+  try {
+    const response = await api2.get('/poolstock/getpoolstock')
+    return response
+  } catch (error) {
+    return error.response
+  }
+}
+
+export const getvna = async(dealer_id,selectedDealerCode)=>{
+  try {
+    const response = await api2.post('/poolstock/getvna',{
+      dealer_id:dealer_id,
+      selectedDealerCode:selectedDealerCode
+    })
+    return response
+  } catch (error) {
+    return error.response
+  }
+}
+
+
+export const getModels = async(dealer_id,selectedDealerCode)=>{
+  try {
+    const response = await api2.post('/poolstock/getModels',{
+      dealer_id:dealer_id,
+      selectedDealerCode:selectedDealerCode
+    })
+    return response
+  } catch (error) {
+    return error.response
+  }
+}
+
+export const getVariants = async(dealer_id,selectedDealerCode)=>{
+  try {
+    const response = await api2.post('/poolstock/getVariants',{
+      dealer_id:dealer_id,
+      selectedDealerCode:selectedDealerCode
+    })
+    return response
+  } catch (error) {
+    return error.response
+  }
+}
+
