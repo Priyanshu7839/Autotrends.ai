@@ -1,0 +1,40 @@
+{
+    "images":[
+        {
+            "name":"Mahindra BE 6",
+            "image":{
+                "i1":"./src/assets/Images/mahindraev6main.png",
+                "i2":"./src/assets/Images/mahindra6left.png",
+                "i3":"./src/assets/Images/mahindraev6window-line.png"
+
+            }
+        },
+        {
+            "name":"Mahindra XEV 9E",
+            "image":{
+                "i1":"./src/assets/Images/mahindraxev9e.png",
+                "i2":"./src/assets/Images/mahindraxv9eside.png",
+                "i3":"./src/assets/Images/mahindraxev9egrille.png"
+
+            }
+        },
+        {
+        "name":"Tata Curve EV",
+        "image":{
+            "i1":"./src/assets/Images/tatacurvemain.png",
+            "i2":"./src/assets/Images/tatacurveside.png",
+            "i3":"./src/assets/Images/tatacurveback.png"
+
+        }
+    },
+    {
+        "name":"MG Windsor EV",
+        "image":{
+            "i1":"./src/assets/Images/mgwindsorfront.png",
+            "i2":"./src/assets/Images/mgwindsorside.png",
+            "i3":"./src/assets/Images/mgwindsorback.png"
+
+        }
+    }
+    ]
+}
