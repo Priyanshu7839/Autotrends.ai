@@ -3,14 +3,19 @@ import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Upload, FileText, Clock } from "lucide-react";
 import { UploadInfo } from "../data/poolStockData";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { GetLastUpdatedDates, UploadVNA } from "../../../utils/APICalls";
 
 interface UploadCardProps {
   title: string;
   upload: UploadInfo;
   type: 'asm' | 'dealer';
+  dealer_id:number;
+  role:string;
 }
 
-export function UploadCard({ title, upload, type }: UploadCardProps) {
+export function UploadCard({ title, upload, type,dealer_id,role }: UploadCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'uploaded':
@@ -23,6 +28,50 @@ export function UploadCard({ title, upload, type }: UploadCardProps) {
         return 'bg-gray-500 text-white';
     }
   };
+
+
+  const [file,setfile] = useState(null)
+  const [uploading,setUploading] = useState(false)
+
+  useEffect(()=>{
+
+    const uploadfile = async() =>{
+      if(!file){
+        return;
+      }
+
+
+      setUploading(true)
+    
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("dealer_id", dealer_id);
+
+      const response = await UploadVNA(formData)
+
+      
+
+       
+                if(response.data.msg === 'Upload successful'){
+               
+                       
+               
+                       setUploading(false);
+                       toast.success(`Vna Uploaded successfully!`);
+                       }
+               else{
+                setUploading(false);
+                       toast.error(`${response.data.error}`);
+               }
+
+               setfile(null)
+    
+
+
+    }
+
+    uploadfile()
+  },[file])
 
   return (
     <Card className="p-6 bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-[#0285FF]/30">
@@ -69,15 +118,22 @@ export function UploadCard({ title, upload, type }: UploadCardProps) {
           </div>
         </div>
         
-        {/* <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1">
+        {(title === 'Dealer Upload (VNA)' && role === 'ASM') && <div className="flex gap-2 pt-2">
+          <button 
+            
+            className="relative flex items-center justify-center p-2 border border-[#cfcfd7] rounded-md text-sm w-full">
             <Upload className="w-4 h-4 mr-1" />
-            Replace File
-          </Button>
-          <Button variant="outline" size="sm" className="flex-1">
+            {uploading?'Replacing':'Replace File'}
+
+            <input 
+          
+            onChange={(e)=>{setfile(e.target.files?.[0])}}
+            type="file" accept=".xlsx" className="w-full absolute top-0 left-0 z-20 opacity-0 h-full" />
+          </button>
+          {/* <Button variant="outline" size="sm" className="flex-1">
             View Summary
-          </Button>
-        </div> */}
+          </Button> */}
+        </div>}
       </div>
     </Card>
   );

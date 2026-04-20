@@ -31,6 +31,7 @@ import {
 import { useSelector } from "react-redux";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { Card } from "./Components/ui/card";
+import { FiDownload } from "react-icons/fi";
 
 const PoolStock = () => {
   const dealershipDetails = useSelector((state) => state.DealershipDetails);
@@ -118,6 +119,9 @@ const PoolStock = () => {
   const [dealershipIdAsm,setdealershipIdAsm] = useState('')
   const [dealershipButtonShow,setDealershipButtonShow] = useState(false)
   const [selectedDealershipName,setSelectedDealershipName] = useState('')
+  
+  const [vnaLength,setvnaLength] = useState('')
+  const [poolstockLength,setpoolstockLength] = useState('')
 
   useEffect(()=>{
     const fetchDealerships = async() => {
@@ -126,8 +130,7 @@ const PoolStock = () => {
       setSelectedDealershipName(response?.data?.data?.[0]?.dealership_name)
       setdealershipIdAsm(response?.data?.data?.[0]?.pk_id)
 }
-        const poolstock = await getpoolstock();
-      setpoolstock(poolstock?.data?.data);
+    
     }
 
     
@@ -215,86 +218,19 @@ else{
 
       setmatchedVariants(result1);
 
-      const colourCounts = matchedStock.reduce((acc, item) => {
-        const colour = item.Colour;
-        if (!colour) return acc;
-
-        acc[colour] = (acc[colour] || 0) + 1;
-        return acc;
-      }, {});
-
-      const result2 = Object.entries(colourCounts).map(([Colour, count]) => ({
-        Colour,
-        count,
-      }));
-
-      setmatchedColurs(result2)
+      
  
 
-      let vna
-
-     if(dealershipDetails?.role === 'ASM') {
-        vna = await getvna(dealershipIdAsm, selectedDealerCode);
-     }
-     else{
-        vna = await getvna(dealershipDetails?.id, selectedDealerCode);
-     }
-      setvna(vna?.data?.data);
-
-      let models 
-
-      if(dealershipDetails?.role === 'ASM'){
-         models = await getModels(dealershipIdAsm, selectedDealerCode);
-      }
-      else{
-         models = await getModels(dealershipDetails?.id, selectedDealerCode);
-      }
       
-      setModels(models?.data?.data);
-
-      let variants
-
-      if(dealershipDetails?.role === 'ASM'){
-         variants = await getVariants(
-        dealershipIdAsm,
-        selectedDealerCode,
-      );
-      }
-      else{
-         variants = await getVariants(
-        dealershipDetails?.id,
-        selectedDealerCode,
-      );
-      }
       
-      setVariants(variants?.data?.data);
 
-      let colours
+      let timedata 
 
-      if(dealershipDetails?.role === 'ASM'){
-       colours = await getColour(dealershipIdAsm,selectedDealerCode)
-
-      }
-      else{
-       colours = await getColour(dealershipDetails?.id,selectedDealerCode)
-
-      }
-
-
-      setColurs(colours?.data?.data)
-
-      const poolstockmodels = await getpoolstockModel()
-      setpoolstockModels(poolstockmodels?.data?.data)
-
-      const poolstockvariant = await getpoolstockVariant()
-      setpoolstockVariants(poolstockvariant?.data?.data)
-
-      const poolstockColour = await getpoolstockColour()
-      setpoolstockColurs(poolstockColour?.data?.data)
-
-
-
-      const timedata = await GetLastUpdatedDates(dealershipDetails?.id);
+       if(dealershipDetails?.role==='ASM'){
+timedata = await GetLastUpdatedDates(dealershipIdAsm);
+       }else{
+        timedata = await GetLastUpdatedDates(dealershipDetails?.id);
+       }
 
       setasmUpload({
         ...asmUpload,
@@ -318,7 +254,135 @@ else{
     MatchedData();
   }, [selectedDealerCode,dealershipIdAsm]);
 
+  
   const [selectedList, setSelectedList] = useState("Matched");
+  const [filteredData,setfilteredData] = useState([])
+
+  useEffect(()=>{
+    
+
+
+
+    const baseList = selectedList === "Matched"
+                  ? matchedvariants
+                  : selectedList === "VNA" ? variants :selectedList==='Poolstock' ? poolstockvariants : []
+
+                  const filteredData = selectedList === "Matched" && matchedmodelFilter !== "ALL" ? 
+                  baseList?.filter((item)=>item.Trim.includes(matchedmodelFilter)) :baseList
+                  
+
+    setfilteredData(filteredData)
+
+
+
+    const colourCounts = ((matchedmodelFilter === 'ALL' && matchedvariantFilter === 'ALL') ? MatchedStock : (matchedmodelFilter !== 'ALL' && matchedvariantFilter === 'ALL') ? MatchedStock?.filter((item)=>item.Trim?.includes(matchedmodelFilter)) : MatchedStock?.filter((item)=>item.Trim?.includes(matchedvariantFilter)) ).reduce((acc, item) => {
+        const colour = item.Colour;
+        if (!colour) return acc;
+
+        acc[colour] = (acc[colour] || 0) + 1;
+        return acc;
+      }, {});
+
+      const result2 = Object.entries(colourCounts).map(([Colour, count]) => ({
+        Colour,
+        count,
+      }));
+
+      setmatchedColurs(result2)
+  },[matchedmodelFilter,matchedvariants,MatchedStock,matchedvariantFilter,selectedList,poolstockvariants,variants])
+
+
+  
+useEffect(()=>{
+      const fetchpoolstock = async() => {
+        const poolstock = await getpoolstock(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter);
+      setpoolstock(poolstock?.data?.data);
+      setpoolstockLength(poolstock?.data?.data?.length)
+
+
+
+
+      const poolstockmodels = await getpoolstockModel(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter)
+      setpoolstockModels(poolstockmodels?.data?.data)
+
+      const poolstockvariant = await getpoolstockVariant(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter)
+      setpoolstockVariants(poolstockvariant?.data?.data)
+
+      const poolstockColour = await getpoolstockColour(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter)
+      setpoolstockColurs(poolstockColour?.data?.data)
+      } 
+
+      fetchpoolstock()
+},[poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter])
+
+
+useEffect(()=>{
+
+  const fetchvnaData = async() => {
+    let vna
+
+     if(dealershipDetails?.role === 'ASM') {
+        vna = await getvna(dealershipIdAsm, selectedDealerCode,modelFilter,variantFilter,colourFilter);
+        console.log(vna)
+     }
+     else{
+        vna = await getvna(dealershipDetails?.id, selectedDealerCode,modelFilter,variantFilter,colourFilter);
+     }
+      setvna(vna?.data?.data);
+      setvnaLength(vna?.data?.data?.length)
+
+      let models 
+
+      if(dealershipDetails?.role === 'ASM'){
+         models = await getModels(dealershipIdAsm, selectedDealerCode,modelFilter,variantFilter,colourFilter);
+      }
+      else{
+         models = await getModels(dealershipDetails?.id, selectedDealerCode,modelFilter,variantFilter,colourFilter);
+      }
+      
+      setModels(models?.data?.data);
+
+      let variants
+
+      if(dealershipDetails?.role === 'ASM'){
+         variants = await getVariants(
+        dealershipIdAsm,
+        selectedDealerCode,modelFilter,variantFilter,colourFilter
+      );
+      }
+      else{
+         variants = await getVariants(
+        dealershipDetails?.id,
+        selectedDealerCode,modelFilter,variantFilter,colourFilter
+      );
+      }
+      
+      setVariants(variants?.data?.data);
+
+      let colours
+
+      if(dealershipDetails?.role === 'ASM'){
+       colours = await getColour(dealershipIdAsm,selectedDealerCode,modelFilter,variantFilter,colourFilter)
+
+      }
+      else{
+       colours = await getColour(dealershipDetails?.id,selectedDealerCode,modelFilter,variantFilter,colourFilter)
+
+      }
+
+
+      setColurs(colours?.data?.data)
+
+  }
+
+  fetchvnaData()
+},[modelFilter,variantFilter,colourFilter,dealershipIdAsm,selectedDealerCode])
+
+  
+
+
+  
+  
 
   return (
     <div className="w-[calc(100vw-230px)] h-[100vh]  p-[1rem] font-roboto ">
@@ -365,140 +429,14 @@ else{
         </div>
 
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex mb-6  items-center justify-between ">
+            <div className="flex items-center gap-2">
             <div className="w-1 h-6 bg-[#0285FF] rounded-full"></div>
             <h2 className="text-xl text-gray-900" style={{ fontWeight: 600 }}>
               Upload Tracker
             </h2>
           </div>
-          <div className="grid grid-cols-2 gap-6">
-            <UploadCard
-              title="ASM Upload (Poolstock)"
-              upload={asmUpload}
-              type="asm"
-            />
-            <UploadCard
-              title="Dealer Upload (VNA)"
-              upload={dealerUpload}
-              type="dealer"
-            />
-          </div>
-        </div>
-
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <div className="w-1 h-6 bg-[#0285FF] rounded-full"></div>
-            <h2 className="text-xl text-gray-900" style={{ fontWeight: 600 }}>
-              Matching Summary
-            </h2>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <KPICard
-              title="Total Units Matched"
-              value={MatchedStock?.length}
-              icon={CheckCircle}
-              color="#10B981"
-            />
-            {/* <KPICard
-              title="Unmatched Units"
-              value={unmatched}
-              icon={AlertCircle}
-              color="#F59E0B"
-            />
-            <KPICard
-              title="Missing in Dealer"
-              value={missingInDealer}
-              icon={XCircle}
-              color="#EF4444"
-            />
-            <KPICard
-              title="Missing in OEM"
-              value={missingInOEM}
-              icon={XCircle}
-              color="#EF4444"
-            />
-            <KPICard
-              title="Match Accuracy"
-              value={`${matchAccuracy}%`}
-              icon={TrendingUp}
-              color="#0285FF"
-            />
-           */}
-
-            <div className="flex w-full  h-full justify-start gap-[1rem]">
-                {(selectedList === "Matched"
-                  ? matchedmodels
-                  : selectedList === "VNA" ? models : selectedList === 'Poolstock' && poolstockmodels 
-                )?.length !== 0 &&
-                  (selectedList === "Matched"
-                    ? matchedmodels
-                    : selectedList === "VNA" ? models : selectedList === 'Poolstock' && poolstockmodels 
-                  )?.map((model, i) => {
-                    return (
-                     
-                        <Card 
-
-                         key={i}
-                        onClick={() => {
-                          if(selectedList==='VNA'){
-                            if (modelFilter === model.model) {
-                            setModelFilter("ALL");
-                          } else {
-                            setModelFilter(model.model);
-                          }
-                        }
-                        if(selectedList==='Matched'){
-                            if (matchedmodelFilter === model.model) {
-                            setmatchedModelFilter("ALL");
-                          } else {
-                            setmatchedModelFilter(model.model);
-                          }
-                        }
-                        }}
-                        className={`p-5  bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-[#0285FF]/30 relative overflow-hidden group
-                        ${
-                          modelFilter === model.model || matchedmodelFilter === model.model
-                            ? "bg-[#0b85ff33]"
-                            : "hover:bg-[#0b85ff1a]"
-                        }
-                        `}>
-                           
-                             <div className="relative flex items-start justify-between">
-                               <div className="space-y-1">
-                                 <p className="text-sm text-gray-500">{model?.model}</p>
-                                 <p className="text-2xl text-gray-900" style={{ fontWeight: 600 }}>
-                                   {model?.count}
-                                 </p>
-                               </div>
-                               
-                             </div>
-                           </Card>
-                    
-
-          
-                    );
-                  })}
-              </div>
-          </div>
-        </div>
-
-     <div className="flex items-center justify-between gap-2">
-         <div className="flex item-center gap-2 border border-[#cfcfd7] rounded-[8px] px-2 py-1 w-fit">
-          {["Matched", "VNA", "Poolstock"].map((item, i) => {
-            return (
-              <span
-                onClick={() => {
-                  setSelectedList(item);
-                }}
-                key={i}
-                className={`px-2 py-1 cursor-pointer rounded-md ${selectedList === item ? "bg-[#0b85ff] text-white font-medium" : "text-[#000]"}`}
-              >
-                {item}
-              </span>
-            );
-          })}
-        </div>
-        {dealershipDetails?.role==='ASM' && <button
+          {dealershipDetails?.role==='ASM' && <button
                 className={`text-[#0b85ff] text-[.875rem] flex items-center justify-between gap-[.25rem] cursor-pointer relative px-[.5rem] py-[.25rem] border-[1px] border-[#0b85ff] rounded-[8px] z-[999]  ${
                   dealershipButtonShow && "rounded-b-[0px] border-b-0"
                 }`}
@@ -537,6 +475,158 @@ else{
                   })}
                 </div>
               </button>}
+          </div>
+          <div className="grid grid-cols-2 gap-6">
+            <UploadCard
+              title="ASM Upload (Poolstock)"
+              upload={asmUpload}
+              type="asm"
+            />
+            <UploadCard
+              title="Dealer Upload (VNA)"
+              upload={dealerUpload}
+              type="dealer"
+              dealer_id={dealershipIdAsm}
+              role = {dealershipDetails?.role}
+            />
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-1 h-6 bg-[#0285FF] rounded-full"></div>
+            <h2 className="text-xl text-gray-900" style={{ fontWeight: 600 }}>
+              Matching Summary
+            </h2>
+          </div>
+          <div className="flex gap-2 items-stretch">
+            <KPICard
+              title={`Total Units ${selectedList==='Matched' && 'Matched'}`}
+              value={selectedList === 'Matched' ? MatchedStock?.length : selectedList === 'VNA' ? vnaLength :selectedList === 'Poolstock' && poolstockLength}
+              icon={CheckCircle}
+              color="#10B981"
+            />
+          
+            <div className="flex justify-start gap-[1rem]">
+                {
+                
+                (selectedList === "Matched"
+                  ? matchedmodels
+                  : selectedList === "VNA" ? models : selectedList === 'Poolstock' && poolstockmodels 
+                )?.length !== 0 &&
+                  (selectedList === "Matched"
+                    ? matchedmodels
+                    : selectedList === "VNA" ? models : selectedList === 'Poolstock' && poolstockmodels 
+                  )?.map((model, i) => {
+                    return (
+                     
+                        <Card 
+
+                         key={i}
+                        onClick={() => {
+                          if(selectedList==='VNA'){
+                            if (modelFilter === model.model) {
+                            setModelFilter("ALL");
+                          } else {
+                            setModelFilter(model.model);
+                          }
+                        }
+                        if(selectedList==='Matched'){
+                            if (matchedmodelFilter === model.model) {
+                            setmatchedModelFilter("ALL");
+                          } else {
+                            setmatchedModelFilter(model.model);
+                          }
+                        }
+                        if(selectedList==='Poolstock'){
+                            if (poolstockmodelFilter === model.model) {
+                            setpoolstockModelFilter("ALL");
+                          } else {
+                            setpoolstockModelFilter(model.model);
+                          }
+                        }
+                        }}
+                        className={`p-5 h-full  bg-white border border-gray-200 shadow-lg hover:shadow-xl transition-all duration-300 hover:border-[#0285FF]/30 relative overflow-hidden group
+                        ${
+                          modelFilter === model.model || matchedmodelFilter === model.model || poolstockmodelFilter === model.model 
+                            ? "bg-[#0b85ff33]"
+                            : "hover:bg-[#0b85ff1a]"
+                        }
+                        `}>
+                           
+                             <div className="relative flex items-start justify-between">
+                               <div className="space-y-1">
+                                 <p className="text-sm text-black">{model?.model}</p>
+                                 <p className="text-2xl text-gray-900" style={{ fontWeight: 600 }}>
+                                   {model?.count}
+                                 </p>
+                               </div>
+                               
+                             </div>
+                           </Card>
+                    
+
+          
+                    );
+                  })}
+              </div>
+          </div>
+        </div>
+
+     <div className="flex items-center justify-between gap-2">
+         <div className="flex item-center gap-2 border border-[#cfcfd7] rounded-[8px] px-2 py-1 w-fit">
+          {["Matched", "VNA", "Poolstock"].map((item, i) => {
+            return (
+              <span
+                onClick={() => {
+                  setSelectedList(item);
+                }}
+                key={i}
+                className={`px-2 py-1 cursor-pointer rounded-md ${selectedList === item ? "bg-[#0b85ff] text-white font-medium" : "text-[#000]"}`}
+              >
+                {item}
+              </span>
+            );
+          })}
+        </div>
+        
+
+                                 <button
+                                  className="py-[.25rem] px-[1rem] border-[#ffffff4d] border-[1px]  font-medium text-[.875rem] rounded-[6px] cursor-pointer flex items-center justify-center gap-[.5rem] bg-[#0b85ff] text-[white] relative"
+                                  onClick={() => {
+                                  if(dealershipDetails?.role === 'ASM'){
+                                        if(selectedList === 'Matched'){
+                                          window.location.href = `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadMatchedExcel/1/${dealershipIdAsm}/${selectedDealerCode}`;
+                                        }
+                                        if(selectedList === 'VNA'){
+                                          window.location.href = `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadOriginalVna/${dealershipIdAsm}`;
+                                        }
+                                        if(selectedList=== 'Poolstock'){
+                                          window.location.href = `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadPoolstock`;
+                                        }
+                                  }
+                                  else{
+                                     
+
+                                      if(selectedList === 'Matched'){
+                                           window.location.href =
+                                      `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadMatchedExcel/1/${dealershipDetails?.id}/${selectedDealerCode}`;
+                                        }
+                                        if(selectedList === 'VNA'){
+                                           window.location.href =
+                                      `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadOriginalVna/${dealershipDetails?.id}`;
+                                        }
+                                        if(selectedList=== 'Poolstock'){
+                                           window.location.href =
+                                      `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadPoolstock`;
+                                        }
+                                  }
+                                  }}
+                                >
+                                  <FiDownload />
+                                  Download {selectedList === 'Matched' ?'Matched' :selectedList === 'VNA' ?'VNA':'Poolstock'} Excel
+                                   
+                                </button>
      </div>
 
        
@@ -554,24 +644,37 @@ else{
                 </div>
               </div>
               <div className="flex flex-col gap-[1rem] items-between justify-between">
-                {(selectedList === "Matched"
-                  ? matchedvariants
-                  : selectedList === "VNA" ?variants :selectedList==='Poolstock' && poolstockvariants
-                )?.length !== 0 &&
-                  (selectedList === "Matched"
-                    ? matchedvariants
-                    : selectedList === "VNA" ? variants :selectedList==='Poolstock' && poolstockvariants
-                  )?.map((variant, i) => {
+                {filteredData?.length > 0 && filteredData?.map((variant, i) => {
                     return (
                       <div
                         key={i}
-                        onClick={() => {
-                          variantFilter === variant?.Trim
-                            ? setVariantFilter("ALL")
-                            : setVariantFilter(variant?.Trim);
+                        
+
+                         onClick={() => {
+                          if(selectedList==='VNA'){
+                            if (variantFilter === variant?.Trim) {
+                            setVariantFilter("ALL");
+                          } else {
+                            setVariantFilter(variant?.Trim);
+                          }
+                        }
+                        if(selectedList==='Matched'){
+                            if (matchedvariantFilter === variant?.Trim) {
+                            setmatchedVariantFilter("ALL");
+                          } else {
+                            setmatchedVariantFilter(variant?.Trim);
+                          }
+                        }
+                        if(selectedList==='Poolstock'){
+                            if (poolstockvariantFilter === variant?.Trim) {
+                            setpoolstockVariantFilter("ALL");
+                          } else {
+                            setpoolstockVariantFilter(variant?.Trim);
+                          }
+                        }
                         }}
                         className={`flex items-center justify-between gap-[3rem] px-[1rem] pr-[.5rem] py-[.25rem] rounded-[8px] border-[1px] border-[#FFE6CC] cursor-pointer ${
-                          variantFilter === variant?.Trim
+                          variantFilter === variant?.Trim || matchedvariantFilter === variant?.Trim || poolstockvariantFilter === variant?.Trim
                             ? "bg-[#ffe6cc66]"
                             : "hover:bg-[rgba(0,0,0,0.1)]"
                         }`}
@@ -630,6 +733,14 @@ else{
                             setmatchedColourFilter("ALL");
                           } else {
                             setmatchedColourFilter(color.Colour);
+                          }
+                        }
+
+                        if(selectedList==='Poolstock'){
+                            if (poolstockcolourFilter === color.Colour) {
+                            setpoolstockColourFilter("ALL");
+                          } else {
+                            setpoolstockColourFilter(color.Colour);
                           }
                         }
                         }}
@@ -707,7 +818,24 @@ else{
               </h1>
             </div>
 
-            {MatchedStock?.map((item, i) => {
+            {
+            
+           MatchedStock?.filter(item =>
+  (matchedmodelFilter === "ALL" ||
+    item?.Trim?.toLowerCase().includes(matchedmodelFilter.toLowerCase())) &&
+  (matchedvariantFilter === "ALL" ||
+    item?.Trim === matchedvariantFilter) &&
+  (matchedcolourFilter === "ALL" ||
+    item?.Colour === matchedcolourFilter)
+)?.length > 0 &&
+MatchedStock?.filter(item =>
+  (matchedmodelFilter === "ALL" ||
+    item?.Trim?.toLowerCase().includes(matchedmodelFilter.toLowerCase())) &&
+  (matchedvariantFilter === "ALL" ||
+    item?.Trim?.includes(matchedvariantFilter)) &&
+  (matchedcolourFilter === "ALL" ||
+    item?.Colour === matchedcolourFilter)
+)?.map((item, i) => {
               return (
                 <div
                   className="w-full p-[.5rem] px-[1rem] border-[1px] border-[#cfcfd7] bg-[white] rounded-[8px] font-2-book text-[.875rem] flex items-center justify-between overflow-x-scroll"

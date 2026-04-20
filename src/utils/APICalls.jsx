@@ -735,18 +735,19 @@ export const GetuniqueDealerCodes  = async() => {
   }
 }
 
-export const getpoolstock = async() => {
+export const getpoolstock = async(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter) => {
   try {
-    const response = await api2.get('/poolstock/getpoolstock')
+    const response = await api2.get(`/poolstock/getpoolstock/${poolstockmodelFilter}/${poolstockvariantFilter}/${poolstockcolourFilter}`)
     return response
   } catch (error) {
     return error.response
   }
 }
 
-export const getvna = async(dealer_id,selectedDealerCode)=>{
+export const getvna = async(dealer_id,selectedDealerCode,modelFilter,variantFilter,colourFilter)=>{
+  console.log(dealer_id)
   try {
-    const response = await api2.post('/poolstock/getvna',{
+    const response = await api2.post(`/poolstock/getvna/${modelFilter}/${variantFilter}/${colourFilter}`,{
       dealer_id:dealer_id,
       selectedDealerCode:selectedDealerCode
     })
@@ -757,9 +758,9 @@ export const getvna = async(dealer_id,selectedDealerCode)=>{
 }
 
 
-export const getModels = async(dealer_id,selectedDealerCode)=>{
+export const getModels = async(dealer_id,selectedDealerCode,modelFilter,variantFilter,colourFilter)=>{
   try {
-    const response = await api2.post('/poolstock/getModels',{
+    const response = await api2.post(`/poolstock/getModels/${modelFilter}/${variantFilter}/${colourFilter}`,{
       dealer_id:dealer_id,
       selectedDealerCode:selectedDealerCode
     })
@@ -769,9 +770,9 @@ export const getModels = async(dealer_id,selectedDealerCode)=>{
   }
 }
 
-export const getVariants = async(dealer_id,selectedDealerCode)=>{
+export const getVariants = async(dealer_id,selectedDealerCode,modelFilter,variantFilter,colourFilter)=>{
   try {
-    const response = await api2.post('/poolstock/getVariants',{
+    const response = await api2.post(`/poolstock/getVariants/${modelFilter}/${variantFilter}/${colourFilter}`,{
       dealer_id:dealer_id,
       selectedDealerCode:selectedDealerCode
     })
@@ -781,9 +782,9 @@ export const getVariants = async(dealer_id,selectedDealerCode)=>{
   }
 }
 
-export const getColour = async(dealer_id,selectedDealerCode)=>{
+export const getColour = async(dealer_id,selectedDealerCode,modelFilter,variantFilter,colourFilter)=>{
   try {
-    const response = await api2.post('/poolstock/getColour',{
+    const response = await api2.post(`/poolstock/getColour/${modelFilter}/${variantFilter}/${colourFilter}`,{
       dealer_id:dealer_id,
       selectedDealerCode:selectedDealerCode
     })
@@ -803,27 +804,27 @@ export const getDealerships = async()=>{
 }
 
 
-export const getpoolstockModel = async()=>{
+export const getpoolstockModel = async(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter)=>{
   try {
-    const response = await api2.get('/poolstock/getpoolstockmodels')
+    const response = await api2.get(`/poolstock/getpoolstockmodels/${poolstockmodelFilter}/${poolstockvariantFilter}/${poolstockcolourFilter}`)
     return response
   } catch (error) {
     return error.response
   }
 }
 
-export const getpoolstockVariant = async()=>{
+export const getpoolstockVariant = async(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter)=>{
   try {
-    const response = await api2.get('/poolstock/getpoolstockvariants')
+    const response = await api2.get(`/poolstock/getpoolstockvariants/${poolstockmodelFilter}/${poolstockvariantFilter}/${poolstockcolourFilter}`)
     return response
   } catch (error) {
     return error.response
   }
 }
 
-export const getpoolstockColour = async()=>{
+export const getpoolstockColour = async(poolstockmodelFilter,poolstockvariantFilter,poolstockcolourFilter)=>{
   try {
-    const response = await api2.get('/poolstock/getpoolstockcolours')
+    const response = await api2.get(`/poolstock/getpoolstockcolours/${poolstockmodelFilter}/${poolstockvariantFilter}/${poolstockcolourFilter}`)
     return response
   } catch (error) {
     return error.response

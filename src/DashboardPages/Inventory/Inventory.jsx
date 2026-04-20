@@ -508,22 +508,12 @@ const data = {
                     className="py-[.25rem] px-[1rem] border-[#ffffff4d] border-[1px] text-[white] font-medium text-[.875rem] rounded-[6px] cursor-pointer flex items-center justify-center gap-[.5rem] hover:bg-[#0b85ff] hover:text-[white] relative"
                     onClick={() => {
                       window.location.href =
-                        `https://autotrends-backend.onrender.com/exceldownloads/DownloadInventory/${DealerData?.id}`;
+                        `https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io/exceldownloads/DownloadInventory/${DealerData?.id}`;
                     }}
                   >
                     <FiDownload />
                     Download Excel
-                    {/* <input
-                accept=".xlsx,xls"
-                onChange={(e) => {
-                  setFile(e.target.files[0]);
-                  e.target.value = "";
-                }}
-                type="file"
-                name=""
-                id=""
-                className="w-full h-full outline-none border-none absolute top-0 left-0 opacity-0"
-              /> */}
+                     
                   </button>
                 </div>
                 <span className="text-[.75rem] font-1 text-[#ffffff]">
