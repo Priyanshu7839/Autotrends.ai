@@ -677,7 +677,8 @@ const Dashboard = () => {
     const InventoryUnits = async () => {
       try {
         const response = await StrategyToolsInventoryDataFetch(
-          dealershipDetails?.id,'ALL','ALL','ALL','ALL');
+          dealershipDetails?.id,'ALL','ALL','ALL','ALL','ALL');
+          console.log(response)
 
           //for inventory aging
         const response1 = await AverageSalesFetch(dealershipDetails?.id);

@@ -414,19 +414,20 @@ export const MasterInventoryListOrderDealer = async (
 
 /* --------------------------New APIS---------------------------------------------------------------*/
 
-export const InventoryDataFetch = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter) => {
+export const InventoryDataFetch = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter,yearFilter) => {
 
 
 
 try {
-  const CapitalStuck  = api2.get(`/InventoryData/CapitalStuck/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const TotalCars  = api2.get(`/InventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const UniqueModels  = api2.get(`/InventoryData/GetUniqueModels/${dealer_id}/${order_dealer}/${stockStatusFilter}`)
-  const UniqueVariants  = api2.get(`/InventoryData/GetUniqueVariants/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}`)
-  const AgeBuckets  = api2.get(`/InventoryData/GetAgeBuckets/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
+  const CapitalStuck  = api2.get(`/InventoryData/CapitalStuck/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const TotalCars  = api2.get(`/InventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const UniqueModels  = api2.get(`/InventoryData/GetUniqueModels/${dealer_id}/${order_dealer}/${stockStatusFilter}/${yearFilter}`)
+  const UniqueVariants  = api2.get(`/InventoryData/GetUniqueVariants/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${yearFilter}`)
+  const AgeBuckets  = api2.get(`/InventoryData/GetAgeBuckets/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
   const LastUpdateDate  = api2.get(`/InventoryData/GetLastUpdateDate/${dealer_id}/`)
-  const Ages  = api2.get(`/InventoryData/GetAges/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const StockStatus = api2.get(`/InventoryData/GetStockStatusHeader/${dealer_id}/${order_dealer}/${modelFilter}/${variantFilter}`)
+  const Ages  = api2.get(`/InventoryData/GetAges/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const StockStatus = api2.get(`/InventoryData/GetStockStatusHeader/${dealer_id}/${order_dealer}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const mfgYear = api2.get( `InventoryData/mfgdate/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
 
 
   const results = await Promise.allSettled([
@@ -437,9 +438,10 @@ try {
       AgeBuckets,
       LastUpdateDate,
       Ages,
-      StockStatus
+      StockStatus,
+      mfgYear
     ]);
-    console.log(results?.[3])
+  
 
     return {
       capitalStuck: results[0]?.value?.data?.capital_stuck,
@@ -449,7 +451,8 @@ try {
       ageBuckets: results[4]?.value?.data?.ageBuckets,
       lastUpdateDate: results[5]?.value?.data?.date,
       ages:results[6]?.value?.data?.ages,
-      stockStatus:results[7]?.value?.data?.stock_status
+      stockStatus:results[7]?.value?.data?.stock_status,
+      mfgYear:results[8]?.value?.data?.data
     };
 
 } catch (error) {
@@ -458,14 +461,16 @@ try {
 
 }
 
-export const GetAllStock = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter) => {
+export const GetAllStock = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter,yearFilter) => {
   try {
-    const response = await api2.get(`/InventoryData/GetAllStock/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
+    const response = await api2.get(`/InventoryData/GetAllStock/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
     return response
   } catch (error) {
     return error.response
   }
 }
+
+
 export const BBNDInventoryDataFetch = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter) => {
   
 try {
@@ -548,20 +553,20 @@ export const GetLastUpdatedDates = async(dealer_id) => {
   }
 }
 
-export const MasterInventoryDataFetch = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter) => {
+export const MasterInventoryDataFetch = async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter,yearFilter) => {
   
 try {
-  const TotalCars  = api2.get(`/MasterInventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
+  const TotalCars  = api2.get(`/MasterInventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
    const TotalCarsBBND  = api2.get(`/BBNDInventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const TotalCarsMain  = api2.get(`/InventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const UniqueModels  = api2.get(`/MasterInventoryData/GetUniqueModels/${dealer_id}/${order_dealer}/${stockStatusFilter}`)
-  const UniqueVariants  = api2.get(`/MasterInventoryData/GetUniqueVariants/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}`)
-  const AgeBuckets  = api2.get(`/MasterInventoryData/GetAgeBuckets/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const Ages  = api2.get(`/MasterInventoryData/GetAges/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
-  const StockStatus  = api2.get(`/MasterInventoryData/GetStockStatusHeader/${dealer_id}/${order_dealer}/${modelFilter}/${variantFilter}`)
+  const TotalCarsMain  = api2.get(`/InventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const UniqueModels  = api2.get(`/MasterInventoryData/GetUniqueModels/${dealer_id}/${order_dealer}/${stockStatusFilter}/${yearFilter}`)
+  const UniqueVariants  = api2.get(`/MasterInventoryData/GetUniqueVariants/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${yearFilter}`)
+  const AgeBuckets  = api2.get(`/MasterInventoryData/GetAgeBuckets/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const Ages  = api2.get(`/MasterInventoryData/GetAges/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
+  const StockStatus  = api2.get(`/MasterInventoryData/GetStockStatusHeader/${dealer_id}/${order_dealer}/${modelFilter}/${variantFilter}/${yearFilter}`)
   const LastUpdateDateMain  = api2.get(`/InventoryData/GetLastUpdateDate/${dealer_id}`)
   const LastUpdateDateBBND  = api2.get(`/BBNDInventoryData/GetLastUpdateDate/${dealer_id}`)
-
+const mfgYear = api2.get( `InventoryData/mfgdate/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
 
 
 
@@ -575,7 +580,8 @@ try {
       Ages,
       StockStatus,
       LastUpdateDateMain,
-      LastUpdateDateBBND
+      LastUpdateDateBBND,
+      mfgYear
 
     ]);
 
@@ -590,6 +596,7 @@ try {
       stockStatus:results[7]?.value?.data?.stock_status,
       lastUpdateDatemain: results[8]?.value?.data?.date,
       lastUpdateDatebbnd: results[9]?.value?.data?.date,
+      mfgYear:results[10]?.value?.data?.data
 
 
     };
@@ -601,11 +608,11 @@ try {
 }
 
 
-export const StrategyToolsInventoryDataFetch  =async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter)=>{
+export const StrategyToolsInventoryDataFetch  =async(dealer_id,order_dealer,stockStatusFilter,modelFilter,variantFilter,yearFilter)=>{
  
 try {
 
-   const TotalCars  = api2.get(`/InventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
+   const TotalCars  = api2.get(`/InventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}/${yearFilter}`)
 
    const BBNDTotalCars  = api2.get(`/BBNDInventoryData/GettotalCars/${dealer_id}/${order_dealer}/${stockStatusFilter}/${modelFilter}/${variantFilter}`)
 
@@ -830,3 +837,4 @@ export const getpoolstockColour = async(poolstockmodelFilter,poolstockvariantFil
     return error.response
   }
 }
+
