@@ -78,6 +78,19 @@ const Datasync = () => {
 
     },
     {
+      id: "vna",
+      title: "VNA Upload",
+      icon: FileChartColumn,
+      lastUpdated: "...",
+      file: null,
+      color: "#0066CC",
+      progress: 0,
+      status: "idle",
+      description: "Upload your sales data here.",
+      role:'ASM'
+
+    },
+    {
       id: "poolstock",
       title: "Poolstock Upload",
       icon: FileChartColumn,
@@ -350,8 +363,7 @@ else{
     
        
            const timeresponse = await GetLastUpdatedDates(dealershipDetails?.id);
-           console.log(timeresponse)
-
+         
         setUploadSections((prev) =>
           prev.map((s) =>
             s.id === "inventory"

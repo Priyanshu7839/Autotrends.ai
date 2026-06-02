@@ -51,6 +51,8 @@ import { MdAutoGraph, MdModeEdit } from "react-icons/md";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+import { IndiaMap } from "./components/IndiaMap";
+import { TrendingUp, DollarSign, Users, Car } from "lucide-react";
 
 ChartJS.register(
   ArcElement,
@@ -1087,125 +1089,40 @@ const MarketAnalytics = () => {
           </div>
         </div>
 
-        <MarketShare
-          StatesYearlyData={StatesYearlyData}
-          RTOData={RTOData}
-          selectedRTO={DealerLocation?.rto}
-          selectedState={DealerLocation?.state}
-          PanIndiaData={PanIndiaData}
-        />
-        <CarSoldRTO
-          StatesYearlyData={StatesYearlyData}
-          RTOData={RTOData}
-          selectedRTO={DealerLocation?.rto}
-          selectedState={DealerLocation?.state}
-          PanIndiaData={PanIndiaData}
-        />
+       {/* map------------------------- */}
+         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-2">
+              Sales by State
+            </h2>
+            <p className="text-gray-600">
+              Hover over states to view detailed analytics
+            </p>
+          </div>
 
-        <MonthlyAnalysisIndia  PanIndiaData={PanIndiaData}/>
-        <div className="w-full flex items-stretch justify-between gap-[1rem]">
-          <div className="w-[100%] border-[1px] border-[#cfcfd5] rounded-[12px] p-[1rem] flex flex-col gap-[1rem]">
-            <div className="flex items-center justify-between">
-              <h1 className="font-1 font-medium text-[1rem] flex items-center gap-[.5rem]">
-                <FaChartBar />
-                Monthly Analysis For {
-                  selectedBrandStateMonthly?.split(" ")[0]
-                }{" "}
-                in {DealerLocation?.state}
-              </h1>
+          <div className="w-full h-[600px] relative">
+            <IndiaMap />
+          </div>
 
-              <div className="flex items-center gap-[1rem]">
-                <div className="flex items-center justify-center gap-[.5rem]">
-                  <span
-                    className="w-[15px] h-[2px]  rounded-full"
-                    style={{ background: `${colors[0]}` }}
-                  ></span>{" "}
-                  <h1 className="text-[.75rem] font-medium ">{`${new Date().getFullYear() - 2}`}</h1>
-                </div>
-                <div className="flex items-center justify-center gap-[.5rem]">
-                  <span
-                    className="w-[15px] h-[2px]  rounded-full"
-                    style={{ background: `${colors[1]}` }}
-                  ></span>{" "}
-                  <h1 className="text-[.75rem] font-medium ">{`${new Date().getFullYear() - 1}`}</h1>
-                </div>
-                <div className="flex items-center justify-center gap-[.5rem]">
-                  <span
-                    className="w-[15px] h-[2px]  rounded-full"
-                    style={{ background: `${colors[1]}` }}
-                  ></span>{" "}
-                  <h1 className="text-[.75rem] font-medium ">{`${new Date().getFullYear()}`}</h1>
-                </div>
-              </div>
-              <button
-                className={`text-[#0b85ff] text-[.875rem] flex items-center justify-between gap-[.25rem] cursor-pointer relative px-[.5rem] py-[.25rem] border-[1px] border-[#0b85ff] rounded-[8px]  ${
-                  selectedBrandStateMonthlyView && "rounded-b-[0px] border-b-0"
-                }`}
-                onClick={() => {
-                  setselectedBrandStateMonthlyView(
-                    !selectedBrandStateMonthlyView
-                  );
-                }}
-              >
-                {selectedBrandStateMonthly?.split(" ")[0]}{" "}
-                <RiArrowDropDownLine className="text-[1.25rem] font-normal" />
-                <div
-                  className={`absolute top-[100%] left-[-1px]  border-t-0 rounded-[10px] rounded-t-[0px] border-[#0b85ff] 
-                  transition-[height] duration-200 overflow-y-scroll bg-[white] z-10
-                  ${
-                    selectedBrandStateMonthlyView
-                      ? "h-[200px] w-[calc(100%+2px)] border-[1px]"
-                      : "w-[0px] h-[0px] border-0"
-                  }
-                  `}
-                  style={{ scrollbarWidth: "none" }}
-                >
-                  {BrandNames.map((brandName) =>
-                    StatesYearlyData?.find((obj) => obj.brand === brandName)
-                  )
-                    ?.filter(Boolean)
-                    ?.map((item, i) => {
-                      return (
-                        <h1
-                          key={i}
-                          className={` py-[.25rem] 
-                        `}
-                          onClick={() => {
-                            setselectedBrandStateMonthly(item.brand);
-                          }}
-                        >
-                          {item.brand.split(" ")[0]}
-                        </h1>
-                      );
-                    })}
-                </div>
-              </button>
+          {/* Legend */}
+          <div className="mt-6 flex items-center justify-center gap-8">
+            <span className="text-sm text-gray-600">Sales Intensity</span>
+            <div className="flex items-center gap-2">
+              <div className="w-12 h-4 rounded" style={{ backgroundColor: "#e6f4ff" }}></div>
+              <span className="text-xs text-gray-500">Low</span>
             </div>
-
-            <div className="flex items-center justify-start  w-full h-[300px]">
-              {/* <Bar data={data} options={options} /> */}
-
-              {StatesYearlyData &&
-              StatesYearlyData &&
-              Object.keys(
-                BrandNames.map((brandName) =>
-                  StatesYearlyData?.find((obj) => obj.brand === brandName)
-                )?.filter(Boolean)
-              )?.filter((k) => k === "monthly").length === 0 ? (
-                <h1 className="text-center w-full  text-[.875rem]">
-                  As of Now We dont have the monthly comparison for the{" "}
-                  {DealerLocation?.state}. We are working on it
-                </h1>
-              ) : (
-                <Line data={data9} options={options2} />
-              )}
+            <div className="flex items-center gap-2">
+              <div className="w-12 h-4 rounded" style={{ backgroundColor: "#66b3ff" }}></div>
+              <span className="text-xs text-gray-500">Medium</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-12 h-4 rounded" style={{ backgroundColor: "#0b85ff" }}></div>
+              <span className="text-xs text-gray-500">High</span>
             </div>
           </div>
         </div>
-        <MonthlyAnalysisRTO
-          RTOData={RTOData}
-          selectedRTO={DealerLocation?.rto}
-        />
+       
+       
       </div>
     </div>
   );

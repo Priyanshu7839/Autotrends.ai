@@ -89,8 +89,11 @@ export default function Login() {
 
   };
   useEffect(() => {
-        if (dealershipDetails.loggedIn) {
+        if (dealershipDetails.loggedIn && dealershipDetails?.role !=='ASM') {
           navigate("/Dashboard");
+        }
+        else if(dealershipDetails.loggedIn && dealershipDetails?.role ==='ASM'){
+          navigate("/Dashboard/poolstock")
         }
       }, [dealershipDetails.loggedIn]);
 

@@ -133,7 +133,6 @@ const Sidebar = () => {
     );
     const name = matchedItem ? matchedItem.name : "Not Found";
     setCurrentActiveSlide(name);
-    console.log(matchedItem?.click)
     navigate(matchedItem?.click);
   }, []);
 

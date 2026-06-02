@@ -51,6 +51,8 @@ import { ReportBuilder } from "../Pages/Reports/ReportBuilder";
 import { SavedReports } from "../Pages/Reports/SavedReports";
 import PoolStock from "../DashboardPages/StrategyTools/PoolStock";
 import ReportNews from "../Pages/Reports/ReportNews/ReportNews";
+import Dailynews from "../Pages/Reports/Dailynews/Dailynews";
+import Dailynews0804 from "../Pages/Reports/Dailynews0804/Dailynews0804";
 
 const MarketAnalytics = lazy(() =>
   import(".././DashboardPages/MarketAnalytics/MarketAnalytics")
@@ -142,6 +144,14 @@ const Routers = createBrowserRouter([
       {
         path:'/news',
         element:<ReportNews/>
+      },
+      {
+        path:'/dailynews',
+        element:<Dailynews/>
+      },
+      {
+        path:'dailynews0805',
+        element:<Dailynews0804/>
       },
       
   {

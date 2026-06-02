@@ -355,11 +355,14 @@ const formattedtime = dateObj.toLocaleString("en-IN", {
       ages: "",
       stockStatus:[],
       mainDate:'',
-      bbndDate:''
+      bbndDate:'',
+      mfgyear:[]
     });
       const [stockStatusFilter,setStockStatusFilter] = useState('ALL')
          const [modelFilter,setModelFilter] = useState('ALL')
             const [variantFilter,setVariantFilter] = useState('ALL')
+              const [yearFilter,setyearFilter] = useState('ALL')
+            
 
   
     useEffect(() => {
@@ -368,7 +371,7 @@ const formattedtime = dateObj.toLocaleString("en-IN", {
           DealerData?.id,
           selectedDealerCode,
           stockStatusFilter,
-          modelFilter,variantFilter
+          modelFilter,variantFilter,yearFilter
         );
 
         SetMasterInventoryData({
@@ -382,12 +385,13 @@ const formattedtime = dateObj.toLocaleString("en-IN", {
           ages: response.ages,
           stockStatus:response.stockStatus,
           mainDate:response.lastUpdateDatemain,
-          bbndDate:response.lastUpdateDatebbnd
+          bbndDate:response.lastUpdateDatebbnd,
+          mfgyear:response.mfgYear
         });
       };
   
       FetchMasterInventoryData();
-    }, [selectedDealerCode,stockStatusFilter,modelFilter,variantFilter]);
+    }, [selectedDealerCode,stockStatusFilter,modelFilter,variantFilter,yearFilter]);
 
     
 
@@ -397,14 +401,14 @@ const formattedtime = dateObj.toLocaleString("en-IN", {
   
     useEffect(() => {
       const GetAllStocks = async () => {
-        const response = await GetAllStock(DealerData?.id, selectedDealerCode,stockStatusFilter,modelFilter,variantFilter);
+        const response = await GetAllStock(DealerData?.id, selectedDealerCode,stockStatusFilter,modelFilter,variantFilter,yearFilter);
   
      
         setInventoryItems(response?.data?.stock);
       };
   
       GetAllStocks();
-    }, [selectedDealerCode,stockStatusFilter,modelFilter,variantFilter]);
+    }, [selectedDealerCode,stockStatusFilter,modelFilter,variantFilter,yearFilter]);
     useEffect(() => {
       const GetAllStocks = async () => {
         const response = await GetAllBBNDStock(DealerData?.id, selectedDealerCode,stockStatusFilter,modelFilter,variantFilter);
@@ -645,7 +649,37 @@ const data = {
                 </h1>
               </div>
             </div>
-          <div className="grid grid-cols-4 items-center justify-center gap-[.5rem] w-full  text-white">
+       
+
+             <div className="grid grid-cols-2 items-center justify-center gap-[.5rem] w-full ">
+              {
+              MasterInventoryData?.mfgyear?.map((item)=>{
+                return(
+                   <div
+                   onClick={()=>{
+                    if(yearFilter === 'ALL'){
+                      setyearFilter(item?.["year"])
+                    }
+                    else{
+                      setyearFilter('ALL')
+                    }
+                   }}
+                   className={`px-[.75rem] text-white py-[.5rem] border-[1px] border-[#ffffff4d] rounded-[8px] h-[88px]  backdrop-blur-sm shadow-lg flex flex-col items-center justify-center cursor-pointer *:
+                   ${yearFilter === item?.["year"]?'bg-[#FFFFFF70]':'bg-[#FFFFFF26]'}
+                   `}>
+                <h1 className="font-2-book text-[1.15rem] text-center capitalize">
+                  <h1 className="font-2">Mfg - {item?.["year"]}</h1>
+                  <h1 className="font-2-book">
+                    {item.count}
+                  </h1>
+                </h1>
+              </div>
+                )
+              })
+             }
+             </div>
+
+                <div className="grid grid-cols-4 items-center justify-center gap-[.5rem] w-full  text-white">
               {
               MasterInventoryData?.stockStatus?.map((item)=>{
                 return(
@@ -905,8 +939,9 @@ const data = {
             onScroll={(e) => syncScroll("header", e.target.scrollLeft)}
           >
             <h1 className="text-center min-w-[100px] ">Model</h1>
+            <h1 className="text-center min-w-[150px] ">Mfg</h1>
             <h1 className="text-center min-w-[250px] ">Variant</h1>
-            <h1 className="text-center min-w-[250px] ">Exterior Color</h1>
+            <h1 className="text-center min-w-[200px] ">Exterior Color</h1>
              <h1 className="text-center min-w-[200px] ">VIN Number</h1>
             <h1 className="text-center min-w-[250px] ">Cust Name</h1>
             <h1 className="text-center min-w-[200px] ">Stock Status</h1>
@@ -918,6 +953,12 @@ const data = {
           </div>
 
           {InventoryItems?.map((item, i) => {
+
+              const parseDDMMYYYY = (str) => {
+  if (!str) return null;
+  const [day, month, year] = str.split("/");
+  return new Date(`${year}-${month}-${day}`); // converts to ISO format JS understands
+};
             return (
               <div
                 className="w-full p-[.5rem] px-[1rem] border-[1px] border-[#cfcfd7] bg-[white] rounded-[8px] font-2-book text-[.875rem] flex items-center justify-between overflow-x-scroll"
@@ -928,8 +969,14 @@ const data = {
                 <h1 className="text-center  min-w-[100px]">
                   {item?.["Model"]}
                 </h1>
+
+                <h1 className="text-center  min-w-[150px]">
+                  {new Date(parseDDMMYYYY(item?.["Sign Off Date"]))?.toLocaleDateString('en-us',{
+                    year: 'numeric', month: 'long'
+                  })}
+                </h1>
                 <h1 className="text-center  min-w-[250px]">{item?.Variant}</h1>
-                  <h1 className="text-center  min-w-[250px]">
+                  <h1 className="text-center  min-w-[200px]">
                   {item?.["Exterior Color Name"]}
                 </h1>
                   <h1 className="text-center  min-w-[200px] ">
