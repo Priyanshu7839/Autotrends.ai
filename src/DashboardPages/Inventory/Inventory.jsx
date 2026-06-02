@@ -323,7 +323,6 @@ const Inventory = () => {
       );
 
 
-      console.log(response.stockStatus)
       SetInventoryData({
         ...InventoryData,
         CapitalStuck: response.capitalStuck,

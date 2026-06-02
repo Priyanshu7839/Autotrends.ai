@@ -6,8 +6,8 @@ const api = axios.create({
 });
 const api2 = axios.create({
   // baseURL: "https://autotrends-backend.onrender.com/",
-  // baseURL:"http://localhost:8002"
-  baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
+  baseURL:"http://localhost:8002"
+  // baseURL:"https://autotrends-backend.wonderfulisland-5beba373.centralindia.azurecontainerapps.io"
 });
 
 const api3 = axios.create({
@@ -439,8 +439,7 @@ try {
       Ages,
       StockStatus
     ]);
-    console.log(results?.[3])
-
+   
     return {
       capitalStuck: results[0]?.value?.data?.capital_stuck,
       totalCars: results[1]?.value?.data?.total_stock,
@@ -671,7 +670,7 @@ export const FetchRTOData = async (selectedState, selectedRTO) => {
 export const FetchIndiaData = async () => {
   try {
     const response = await api3.get(
-      `summary?state_name=All Vahan4 Running States (36/36)&rto_name=All Vahan4 Running Office(1463/1466)&page=1&size=5000&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
+      `summary?state_name=All Vahan4 Running States (36/36)&rto_name=All Vahan4 Running Office(1464/1467)&page=1&size=5000&vehicle_class=LIGHT PASSENGER VEHICLE&vehicle_class=FOUR WHEELER (Invalid Carriage)&vehicle_class=LIGHT MOTOR VEHICLE`,
       {
         headers: {
           "X-API-Key":
