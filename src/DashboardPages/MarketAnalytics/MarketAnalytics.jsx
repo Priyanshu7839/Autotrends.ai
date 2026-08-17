@@ -512,17 +512,37 @@ const MarketAnalytics = () => {
   };
   //--------------------------------------------Monthly Data analysis in india------------------>
 
+  const [IsPremium,setIsPremium] = useState(false)
+
+ 
+
+
+  useEffect(()=>{
+
+    if(dealershipDetails?.subscription !== 'Premium'){
+      setIsPremium(true)
+      
+    }
+    
+  },[])
+
   return (
     <div className="w-[calc(100vw-230px)] h-[100vh]  p-[1rem] font-roboto ">
       <div
         className={`w-full h-full  flex flex-col gap-[1rem] border-[1px] border-[#cfcfd5] rounded-[16px] bg-white   ${
-          showCountryError
+         ( showCountryError || IsPremium)
             ? "p-[0] relative overflow-hidden"
             : "p-[1.25rem] overflow-y-scroll"
         }`}
         style={{ scrollbarWidth: "none" }}
       >
         {/* ----------------------------------------------- */}
+          <CountryErrorPopup
+          error="Market Analytics"
+          showCountryError={IsPremium}
+          setShowCountryError={setIsPremium}
+          />
+
         <CountryErrorPopup
           showCountryError={showCountryError}
           setShowCountryError={setShowCountryError}

@@ -48,13 +48,13 @@ const Sidebar = () => {
       click: "/Dashboard/Strategytools",
       role:'All'
     },
-    {
-      name: "Poolstock",
-      icon: <FileChartColumn size={15}/>,
-      click: "/Dashboard/poolstock",
-      role:'ASM'
+    // {
+    //   name: "Poolstock",
+    //   icon: <FileChartColumn size={15}/>,
+    //   click: "/Dashboard/poolstock",
+    //   role:'ASM'
 
-    },
+    // },
     {
       name: "Customers",
       icon: <HiMiniUsers />,

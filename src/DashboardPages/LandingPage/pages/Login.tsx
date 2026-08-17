@@ -78,7 +78,9 @@ export default function Login() {
               lon: dealer.lon,
               role:response?.data?.role,
               user_name:response?.data?.name,
-              userID:response?.data?.user_id
+              userID:response?.data?.user_id,
+              subscription:dealer?.subscription_type,
+              rtos:dealer?.rtos
             }))
     
             

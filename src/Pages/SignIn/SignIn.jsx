@@ -260,6 +260,7 @@ const SignIn = ({ className }) => {
 
       if (response && response.data.msg === "Logged IN") {
         const dealer = response.data.user;
+        console.log(dealer)
         if (response?.data?.role === "Manager") {
           toast.success(
             `Welcome ${response?.data?.name}, Manager of the Dealership`,
@@ -293,6 +294,8 @@ const SignIn = ({ className }) => {
             role: response?.data?.role,
             user_name: response?.data?.name,
             userID: response?.data?.user_id,
+            subscription:dealer?.subscription_type,
+            rtos:dealer?.rtos
           })
         );
       }

@@ -49,7 +49,7 @@ import {
   PointElement,
   Filler,
 } from "chart.js";
-import { Building2, Car, Hash, MapPin, Package, Snail, Star } from "lucide-react";
+import { Building2, Car, Crown, Hash, MapPin, Package, Snail, Star } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import ReactCountryFlag from "react-country-flag";
 import { CiCircleInfo } from "react-icons/ci";
@@ -61,6 +61,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { AnimatedGradient } from "../LandingPage/components/background/AnimatedGradient";
 import { FloatingParticles } from "../LandingPage/components/background/FloatingParticles";
+import StatesErrorPopup from "../../DashboardComponents/CommonComponents/StatesErrorPopup";
+import CityErrorPopup from "../../DashboardComponents/CommonComponents/CityErrorPopup";
 
 ChartJS.register(
   ArcElement,
@@ -618,6 +620,10 @@ const Dashboard = () => {
   // ---------------------------------------Country Error------------------------------------------------------->
   const [showCountries, setShowCountries] = useState(false);
   const [showCountryError, setShowCountryError] = useState(false);
+
+
+  const [showStatesError,setShowStatesError] = useState(false);
+  const [showCityError,setShowCityError] = useState(false)
   // ----------------------------------------------------------------------------------------------------------->
 
   const [headers,setHeaders] = useState([
@@ -1047,6 +1053,8 @@ setdiffArray(
 
 
 
+
+
   return (
     <div className="w-[calc(100vw-230px)] h-[100vh]  p-[1rem] font-roboto relative">
 
@@ -1055,7 +1063,9 @@ setdiffArray(
       <div
         className={`w-full h-full   flex flex-col gap-[1rem] border-[1px] border-[#cfcfd5] rounded-[16px] bg-transparent
            ${
+            showCityError||
              showCountryError ||
+             showStatesError ||
              FastStarsShow ||
              SlowSnailsShow ||
              showSalesVelcoityCalculator ||
@@ -1067,9 +1077,20 @@ setdiffArray(
         style={{ scrollbarWidth: "none" }}
       >
         {/* ----------------------------------------------- */}
+
+        <CityErrorPopup
+        showCityError={showCityError}
+        setShowCityError={setShowCityError}
+        />
+
         <CountryErrorPopup
           showCountryError={showCountryError}
           setShowCountryError={setShowCountryError}
+        />
+
+        <StatesErrorPopup
+          showStatesError={showStatesError}
+          setShowStatesError={setShowStatesError}
         />
 
         <FastStarsPopup
@@ -1185,7 +1206,12 @@ setdiffArray(
                       <h1
                         key={i}
                         onClick={() => {
-                          dispatch(setState(State));
+                          if(dealershipDetails?.subscription === 'Premium'){
+                            dispatch(setState(State));
+                          }
+                          else{
+                              setShowStatesError(true)
+                          }
                         }}
                         className={`capitalize px-[1rem] py-[.5rem]  hover:bg-[rgba(0,0,0,0.1)] cursor-default text-white text-[.875rem] flex items-center `}
                       >
@@ -1241,10 +1267,25 @@ setdiffArray(
                           <h1
                             key={i}
                             onClick={() => {
-                              dispatch(setRto(rto));
+                              if(dealershipDetails?.subscription === 'Premium'){
+                                dispatch(setRto(rto));
+                              }
+                              else if(dealershipDetails?.rtos?.includes(rto
+                              ?.replace(/\(\s*\d{1,2}-[A-Z]{3}-\d{4}\s*\)/, "")
+                              .trim())){
+                                dispatch(setRto(rto));
+                              }
+                              else{
+                               setShowCityError(true)
+                              }
                             }}
                             className={`capitalize px-[1rem] py-[.5rem]  hover:bg-[rgba(0,0,0,0.1)] cursor-default text-white text-[.875rem] flex items-center `}
                           >
+                           {!(dealershipDetails?.rtos?.includes(rto
+                              ?.replace(/\(\s*\d{1,2}-[A-Z]{3}-\d{4}\s*\)/, "")
+                              .trim())) &&
+                              <Crown  className="shrink-0 mr-2 text-[yellow]" size={12}/>
+                              }
                             {rto
                               ?.replace(/\(\s*\d{1,2}-[A-Z]{3}-\d{4}\s*\)/, "")
                               .trim()}
@@ -1400,7 +1441,7 @@ setdiffArray(
                      
                     <h3 className="text-[2rem] font-bold text-[#0b85ff]">
                       {" "}
-                      {InventoryAge ? (
+                      {InventoryAge !== 'NaN' ? (
                         <span className="text-[1.75rem] text-[white]">
                           {InventoryAge}
                         </span>
@@ -1966,7 +2007,7 @@ setdiffArray(
                         <h1
                           className={`rounded-[8px] px-[.5rem] w-fit ${
                             parseFloat(
-                              ((TIV2025Total - TIV2024Total) / TIV2025Total) *
+                              ((TIV2025Total - TIV2024Total) / TIV2024Total) *
                                 100
                             ).toFixed(2) > 0
                               ? "bg-[#E8F5E9] text-[#43A047]"
@@ -1974,7 +2015,7 @@ setdiffArray(
                           }`}
                         >
                           {parseFloat(
-                            ((TIV2025Total - TIV2024Total) / TIV2025Total) * 100
+                            ((TIV2025Total - TIV2024Total) / TIV2024Total) * 100
                           ).toFixed(2)}
                         </h1>
                       </div>
@@ -2226,7 +2267,7 @@ setdiffArray(
                         className={`  w-fit px-[1rem] rounded-[8px]
                     ${
                       parseFloat(
-                        ((Brand2025Total - Brand2024Total) / Brand2025Total) *
+                        ((Brand2025Total - Brand2024Total) / Brand2024Total) *
                           100
                       ).toFixed(2) > 0
                         ? "bg-[#E8F5E9] text-[#43A047]"
@@ -2235,7 +2276,7 @@ setdiffArray(
                     `}
                       >
                         {parseFloat(
-                          ((Brand2025Total - Brand2024Total) / Brand2025Total) *
+                          ((Brand2025Total - Brand2024Total) / Brand2024Total) *
                             100
                         ).toFixed(2)}
                       </div>

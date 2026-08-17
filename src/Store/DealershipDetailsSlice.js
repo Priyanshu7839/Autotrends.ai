@@ -16,7 +16,10 @@ const initialState = savedDealer
       lon:'',
       role:'',
       user_name:'',
-      userID:''
+      userID:'',
+      subscription:'',
+      rtos:[]
+
     };
 
 const DealershipDetailsSlice = createSlice({
